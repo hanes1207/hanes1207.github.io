@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Euiseok Han</title>
+<meta name="description" content="Personal academic portfolio of Euiseok Han, EE @ KAIST — robotics and autonomous driving.">
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#1a1a1a;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --accent:#2563eb;
+    --card:#fafafa;
+    --maxw:760px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+  /* Header */
+  header{padding:88px 0 40px;border-bottom:1px solid var(--line);}
+  header h1{font-size:2.4rem;font-weight:700;margin:0 0 6px;letter-spacing:-0.02em;}
+  header .tagline{font-size:1.05rem;color:var(--muted);margin:0 0 20px;}
+  .links{display:flex;flex-wrap:wrap;gap:18px;font-size:0.95rem;}
+  .links a{color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:1px;}
+  .links a:hover{color:var(--accent);border-color:var(--accent);text-decoration:none;}
+
+  /* Sections */
+  section{padding:48px 0;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  h2{font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:600;margin:0 0 24px;}
+  p{margin:0 0 16px;}
+
+  .interests{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .tag{font-size:0.85rem;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:#374151;}
+
+  /* Projects */
+  .project{padding:20px 0;border-top:1px solid var(--line);}
+  .project:first-of-type{border-top:none;padding-top:0;}
+  .project h3{margin:0 0 4px;font-size:1.1rem;font-weight:600;}
+  .project .meta{font-size:0.85rem;color:var(--muted);margin:0 0 10px;}
+  .project p{margin:0 0 8px;}
+  .project .stack{font-size:0.82rem;color:var(--muted);}
+
+  /* Education */
+  .edu-item{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--line);}
+  .edu-item:first-child{border-top:none;padding-top:0;}
+  .edu-item .left strong{display:block;font-weight:600;}
+  .edu-item .left span{color:var(--muted);font-size:0.9rem;}
+  .edu-item .year{color:var(--muted);font-size:0.9rem;white-space:nowrap;}
+
+  footer{padding:40px 0 64px;color:var(--muted);font-size:0.85rem;text-align:center;}
+
+  @media(max-width:560px){
+    header{padding:56px 0 32px;}
+    header h1{font-size:2rem;}
+    .edu-item{flex-direction:column;gap:2px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Euiseok Han</h1>
+    <p class="tagline">EE @ KAIST &middot; Robotics &amp; Autonomous Driving</p>
+    <nav class="links">
+      <a href="mailto:hanes1207@kaist.ac.kr">Email</a>
+      <a href="https://github.com/hanes1207" target="_blank" rel="noopener">GitHub</a>
+      <!-- 필요하면 추가: <a href="#">LinkedIn</a> <a href="cv.pdf">CV (PDF)</a> -->
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section id="about">
+    <div class="wrap">
+      <h2>About</h2>
+      <p>
+        I'm an Electrical Engineering student at KAIST interested in robotics and
+        autonomous driving. <!-- TODO: 한두 문장으로 본인 소개. 예: 현재 무슨 연구실/수업,
+        무엇에 끌리는지, 유학 지원 목표(석사/박사, 분야) 등 -->
+        My work spans perception, motion planning, and control for mobile robots.
+      </p>
+      <div class="interests">
+        <span class="tag">Autonomous Driving</span>
+        <span class="tag">SLAM</span>
+        <span class="tag">Motion Planning</span>
+        <span class="tag">Control</span>
+        <span class="tag">Computer Vision</span>
+        <span class="tag">ROS</span>
+        <!-- TODO: 관심 키워드 자유롭게 추가/삭제 -->
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap">
+      <h2>Projects</h2>
+
+      <div class="project">
+        <h3>Mobile Delivery Robot (MDR)</h3>
+        <p class="meta">KAIST EE40078 &middot; 2026</p>
+        <p>
+          Autonomous navigation and manipulation robot stack on ROS — real-time SLAM,
+          AprilTag-based global frame correction, dynamic costmaps, TEB local planning,
+          YOLO target localization, and an interactive web dashboard.
+          <!-- TODO: 본인 역할/기여 한 줄 추가하면 좋음 -->
+        </p>
+        <p class="stack">ROS &middot; Python &middot; C++ &middot; YOLO &middot; SLAM</p>
+        <p><a href="https://github.com/hanes1207" target="_blank" rel="noopener">View on GitHub →</a></p>
+      </div>
+
+      <div class="project">
+        <h3>Project Title</h3>
+        <p class="meta">Course / Lab &middot; Year</p>
+        <p>
+          <!-- TODO: 프로젝트 한두 문장 설명. 무엇을, 왜, 결과는 어땠는지 -->
+          Short description of what you built and the outcome.
+        </p>
+        <p class="stack">Tech &middot; Stack &middot; Here</p>
+        <p><a href="#" target="_blank" rel="noopener">Link →</a></p>
+      </div>
+
+      <!-- 프로젝트 더 추가하려면 위 .project 블록 복사 -->
+
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="wrap">
+      <h2>Education &amp; Awards</h2>
+
+      <div class="edu-item">
+        <div class="left">
+          <strong>KAIST</strong>
+          <span>B.S. in Electrical Engineering<!-- TODO: GPA 넣을거면 여기 --></span>
+        </div>
+        <div class="year">2022 – Present</div>
+      </div>
+
+      <div class="edu-item">
+        <div class="left">
+          <strong>Award / Scholarship Name</strong>
+          <span>Awarding body</span>
+        </div>
+        <div class="year">Year</div>
+      </div>
+      <!-- 수상/장학금 더 추가하려면 위 .edu-item 블록 복사. 없으면 통째로 삭제 -->
+
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <h2>Contact</h2>
+      <p>
+        Feel free to reach out at
+        <a href="mailto:hanes1207@kaist.ac.kr">hanes1207@kaist.ac.kr</a>.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    © <span id="year"></span> Euiseok Han · Built with HTML/CSS, hosted on GitHub Pages
+  </div>
+</footer>
+
+<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+</body>
+</html>
