@@ -13,16 +13,16 @@
     --line:#e5e7eb;
     --accent:#2563eb;
     --card:#fafafa;
-    --maxw:860px;
+    --maxw:1000px;
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;font-size:15px;}      /* 전체 폰트 크기 축소 */
   body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
     color:var(--ink);
     background:var(--bg);
-    line-height:1.65;
+    line-height:1.6;
     -webkit-font-smoothing:antialiased;
   }
   a{color:var(--accent);text-decoration:none;}
@@ -36,8 +36,8 @@
     flex:0 0 185px;width:185px;height:225px;border-radius:10px;
     object-fit:cover;background:var(--card);border:1px solid var(--line);
   }
-  .intro-text h1{font-size:2.3rem;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;}
-  .intro-text .tagline{font-size:1.02rem;color:var(--muted);margin:0 0 14px;}
+  .intro-text h1{font-size:2.05rem;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;}
+  .intro-text .tagline{font-size:0.98rem;color:var(--muted);margin:0 0 14px;}
   .links{display:flex;flex-wrap:wrap;gap:16px;font-size:0.95rem;margin-bottom:18px;}
   .links a{color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:1px;}
   .links a:hover{color:var(--accent);border-color:var(--accent);text-decoration:none;}
@@ -228,9 +228,8 @@
       <!-- ===== Project 3: KF / IMM (live interactive HTML demo + open link) ===== -->
       <div class="project">
         <div class="pmedia">
-          <div class="demo-frame">
-            <iframe src="kf/orbit_demo_2d.html" title="J2-Hamiltonian IMM 3D orbit demo" loading="lazy"></iframe>
-          </div>
+          <video src="kf/kf.mp4" controls preload="metadata" playsinline
+                 onerror="this.style.display='none'"></video>
           <a class="btn" href="kf/orbit_demo_2d.html" target="_blank" rel="noopener">Launch interactive demo ↗</a>
         </div>
         <div class="pbody">
@@ -238,8 +237,8 @@
           <p class="meta">MO50125 Principles &amp; Applications of the Kalman Filter, KAIST &middot; Mar 2026–Present</p>
           <p>
             Satellite maneuver detection using an Interacting Multiple Model (IMM) filter whose transition
-            probability matrix is driven by the change in the J2-Hamiltonian invariant. The demo on the left
-            is a live, interactive 3D visualization — drag to rotate, or open it full-screen.
+            probability matrix is driven by the change in the J2-Hamiltonian invariant. Watch the clip, or
+            launch the live interactive 3D visualization to drag and explore the orbit yourself.
             (Targeting an oral presentation at the KSAS Fall Conference 2026.)
           </p>
           <p class="stack">MATLAB &middot; Kalman Filter &middot; IMM &middot; Orbital Mechanics</p>
