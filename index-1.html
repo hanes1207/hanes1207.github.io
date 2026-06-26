@@ -13,7 +13,7 @@
     --line:#e5e7eb;
     --accent:#2563eb;
     --card:#fafafa;
-    --maxw:860px;
+    --maxw:820px;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -31,9 +31,9 @@
 
   /* Header / Intro */
   header{padding:72px 0 44px;border-bottom:1px solid var(--line);}
-  .intro{display:flex;gap:32px;align-items:center;}          /* 사진 세로 중앙 정렬 */
+  .intro{display:flex;gap:32px;align-items:flex-start;}
   .photo{
-    flex:0 0 185px;width:185px;height:225px;border-radius:10px;
+    flex:0 0 180px;width:180px;height:220px;border-radius:10px;
     object-fit:cover;background:var(--card);border:1px solid var(--line);
   }
   .intro-text h1{font-size:2.3rem;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;}
@@ -55,36 +55,22 @@
   .ri-list li{position:relative;padding-left:18px;}
   .ri-list li::before{content:"▸";position:absolute;left:0;color:var(--accent);}
 
-  /* Projects — 미디어를 글 옆에 배치 (Alvin 스타일) */
-  .project{display:flex;gap:26px;align-items:flex-start;padding:30px 0;border-top:1px solid var(--line);}
+  /* Projects */
+  .project{padding:28px 0;border-top:1px solid var(--line);}
   .project:first-of-type{border-top:none;padding-top:0;}
-  .pmedia{flex:0 0 300px;width:300px;}
-  .pbody{flex:1;min-width:0;}
-  .pbody h3{margin:0 0 4px;font-size:1.12rem;font-weight:600;}
-  .pbody .meta{font-size:0.85rem;color:var(--muted);margin:0 0 12px;}
-  .pbody p{margin:0 0 10px;}
-  .pbody .stack{font-size:0.82rem;color:var(--muted);}
-
-  .pmedia img,.pmedia video{
-    width:100%;height:auto;border-radius:8px;border:1px solid var(--line);
-    background:var(--card);display:block;
+  .project h3{margin:0 0 4px;font-size:1.12rem;font-weight:600;}
+  .project .meta{font-size:0.85rem;color:var(--muted);margin:0 0 12px;}
+  .project p{margin:0 0 10px;}
+  .project .stack{font-size:0.82rem;color:var(--muted);}
+  .media{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0;}
+  .media img{
+    width:240px;max-width:100%;height:auto;border-radius:8px;
+    border:1px solid var(--line);background:var(--card);
   }
-  .pmedia video{background:#000;}
-  .pmedia .stack-media{display:flex;flex-direction:column;gap:10px;}
-  .pmedia img.zoom{cursor:zoom-in;}
-  .caption{font-size:0.78rem;color:var(--muted);margin:6px 0 0;}
-
-  /* Interactive demo frame (KF) */
-  .demo-frame{width:100%;aspect-ratio:4/3;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#0c1018;}
-  .demo-frame iframe{width:100%;height:100%;border:0;display:block;}
-  .btn{
-    display:inline-block;margin-top:8px;font-size:0.85rem;font-weight:600;
-    background:var(--accent);color:#fff;padding:7px 14px;border-radius:7px;
+  .media video{
+    width:360px;max-width:100%;border-radius:8px;border:1px solid var(--line);background:#000;
   }
-  .btn:hover{text-decoration:none;opacity:.9;}
-
-  /* YouTube embed (옵션) */
-  .video-embed{position:relative;width:100%;aspect-ratio:16/9;}
+  .video-embed{position:relative;width:100%;max-width:480px;aspect-ratio:16/9;margin:12px 0;}
   .video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:8px;}
 
   /* Education & Experience */
@@ -97,22 +83,12 @@
 
   footer{padding:40px 0 64px;color:var(--muted);font-size:0.85rem;text-align:center;}
 
-  /* Lightbox (포스터/사진 클릭 확대) */
-  #lightbox{
-    position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;
-    align-items:center;justify-content:center;z-index:1000;cursor:zoom-out;padding:24px;
-  }
-  #lightbox.open{display:flex;}
-  #lightbox img{max-width:96vw;max-height:94vh;border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,.5);}
-
   @media(max-width:640px){
     header{padding:48px 0 32px;}
-    .intro{flex-direction:column;gap:20px;text-align:left;}
+    .intro{flex-direction:column;gap:20px;}
     .photo{width:150px;height:184px;flex-basis:auto;}
     .intro-text h1{font-size:1.9rem;}
     .ri-list{grid-template-columns:1fr;}
-    .project{flex-direction:column;gap:16px;}
-    .pmedia{width:100%;flex-basis:auto;}
     .item{flex-direction:column;gap:4px;}
     .item .year{text-align:left;}
   }
@@ -123,13 +99,15 @@
 <header>
   <div class="wrap">
     <div class="intro">
-      <img class="photo" src="images/profile.jpg" alt="Euiseok Han" onerror="this.style.display='none'">
+      <!-- 사진: webpage/images/profile.jpg 에 본인 사진을 넣으면 자동으로 표시됩니다 -->
+      <img class="photo" src="images/profile.jpg" alt="Euiseok Han"
+           onerror="this.style.display='none'">
       <div class="intro-text">
         <h1>Euiseok Han</h1>
         <p class="tagline">B.S. in Electrical Engineering &amp; Computer Science &middot; KAIST</p>
         <nav class="links">
           <a href="mailto:hanes1207@kaist.ac.kr">Email</a>
-          <a href="CV/CV_EuiseokHan.pdf" target="_blank" rel="noopener">CV</a>
+          <a href="CV_EuiseokHan.pdf" target="_blank" rel="noopener">CV</a>
           <a href="https://github.com/hanes1207" target="_blank" rel="noopener">GitHub</a>
           <a href="https://www.linkedin.com/in/hanes1207/" target="_blank" rel="noopener">LinkedIn</a>
         </nav>
@@ -179,93 +157,80 @@
     <div class="wrap">
       <h2>Projects</h2>
 
-      <!-- ===== Project 1: Robot (video on the side) ===== -->
+      <!-- ============================================================
+           프로젝트 블록 복사 안내:
+           - 사진 추가:  <div class="media"> 안에 <img src="images/파일명.jpg" alt="설명"> 추가
+           - 동영상(파일): <div class="media"> 안에 <video src="images/파일명.mp4" controls></video> 추가
+           - 동영상(유튜브): 아래 .video-embed 블록을 복사해서 src의 VIDEO_ID만 교체
+           - 프로젝트 추가: <div class="project"> ... </div> 통째로 복사
+           ============================================================ -->
+
       <div class="project">
-        <div class="pmedia">
-          <video src="robot/robot.mp4" controls preload="metadata" playsinline
+        <h3>Exploring LLM-guided Autonomous Robots</h3>
+        <p class="meta">EE40078 Introduction to Multi-disciplinary Robotics, KAIST &middot; Mar–Jun 2026</p>
+        <p>
+          An LLM-guided autonomous mobile delivery robot. The stack integrates RTAB-Map localization,
+          path planning, and vision-based object pick-up, letting the robot interpret natural-language
+          instructions and carry out delivery tasks end to end.
+        </p>
+        <div class="media">
+          <!-- 예시: 실제 영상 파일을 넣으면 자동 표시 (없으면 숨김) -->
+          <video src="robot/robot.mp4" controls preload="metadata"
                  onerror="this.style.display='none'"></video>
-          <p class="caption">Short clip (3 s). Full demo on YouTube — see link.</p>
-          <!-- 전체 영상을 유튜브에 올린 뒤 아래 주석을 풀고 VIDEO_ID 교체하면 됩니다:
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Robot full demo" allowfullscreen></iframe>
-          </div>
-          -->
+          <img src="images/mdr_1.jpg" alt="Mobile delivery robot" onerror="this.style.display='none'">
         </div>
-        <div class="pbody">
-          <h3>Exploring LLM-guided Autonomous Robots</h3>
-          <p class="meta">EE40078 Introduction to Multi-disciplinary Robotics, KAIST &middot; Mar–Jun 2026</p>
-          <p>
-            An LLM-guided autonomous mobile delivery robot. The stack integrates RTAB-Map localization,
-            path planning, and vision-based object pick-up, letting the robot interpret natural-language
-            instructions and carry out delivery tasks end to end.
-          </p>
-          <p class="stack">ROS &middot; Python &middot; RTAB-Map &middot; LLM &middot; Path Planning</p>
-        </div>
+        <p class="stack">ROS &middot; Python &middot; RTAB-Map &middot; LLM &middot; Path Planning</p>
       </div>
 
-      <!-- ===== Project 2: Nubzuki (video + zoomable image) ===== -->
       <div class="project">
-        <div class="pmedia">
-          <div class="stack-media">
-            <video src="3dml/rendered.mp4" controls preload="metadata" playsinline
-                   onerror="this.style.display='none'"></video>
-            <img class="zoom" src="3dml/cluster_recover.png" alt="Nubzuki instance segmentation"
-                 data-large="3dml/cluster_recover.png" onerror="this.style.display='none'">
-          </div>
+        <h3>Nubzuki's Adventure — Segmentation &amp; Rendering Contest</h3>
+        <p class="meta">CS40709 Machine Learning for 3D Data, KAIST &middot; Mar–Jun 2026</p>
+        <p>
+          Class-agnostic 3D instance segmentation of Nubzuki (the KAIST mascot) synthesized in MultiScan,
+          using a PCA-aware encoder, <em>NubzukiPriorNet</em>. I also produced a Gaussian-splatting-based
+          rendered short film, <em>Nubzuki's Adventure</em>, compositing handcrafted 3D objects via z-buffering.
+        </p>
+        <div class="media">
+          <video src="3dml/rendered.mp4" controls preload="metadata"
+                 onerror="this.style.display='none'"></video>
+          <img src="3dml/cluster_recover.png" alt="Nubzuki segmentation" onerror="this.style.display='none'">
+          <img src="images/nubzuki_2.jpg" alt="Nubzuki rendering" onerror="this.style.display='none'">
         </div>
-        <div class="pbody">
-          <h3>Nubzuki's Adventure — Segmentation &amp; Rendering Contest</h3>
-          <p class="meta">CS40709 Machine Learning for 3D Data, KAIST &middot; Mar–Jun 2026</p>
-          <p>
-            Class-agnostic 3D instance segmentation of Nubzuki (the KAIST mascot) synthesized in MultiScan,
-            using a PCA-aware encoder, <em>NubzukiPriorNet</em>. I also produced a Gaussian-splatting-based
-            rendered short film, <em>Nubzuki's Adventure</em>, compositing handcrafted 3D objects via z-buffering.
-          </p>
-          <p class="stack">PyTorch &middot; Gaussian Splatting &middot; 3D Segmentation &middot; PCA</p>
+        <!-- 유튜브에 올렸다면 아래 주석을 풀고 VIDEO_ID 교체:
+        <div class="video-embed">
+          <iframe src="https://www.youtube.com/embed/VIDEO_ID"
+                  title="Nubzuki's Adventure" allowfullscreen></iframe>
         </div>
+        -->
+        <p class="stack">PyTorch &middot; Gaussian Splatting &middot; 3D Segmentation &middot; PCA</p>
       </div>
 
-      <!-- ===== Project 3: KF / IMM (live interactive HTML demo + open link) ===== -->
       <div class="project">
-        <div class="pmedia">
-          <div class="demo-frame">
-            <iframe src="kf/orbit_demo.html" title="J2-Hamiltonian IMM 3D orbit demo" loading="lazy"></iframe>
-          </div>
-          <a class="btn" href="kf/orbit_demo.html" target="_blank" rel="noopener">Launch interactive demo ↗</a>
+        <h3>J2-Hamiltonian Invariant–Driven Mode-Transition IMM for Maneuver Detection</h3>
+        <p class="meta">MO50125 Principles &amp; Applications of the Kalman Filter, KAIST &middot; Mar 2026–Present</p>
+        <p>
+          Satellite maneuver detection using an Interacting Multiple Model (IMM) filter whose transition
+          probability matrix is driven by the change in the J2-Hamiltonian invariant.
+          (Targeting an oral presentation at the KSAS Fall Conference 2026.)
+        </p>
+        <div class="media">
+          <img src="images/imm_1.jpg" alt="IMM maneuver detection" onerror="this.style.display='none'">
         </div>
-        <div class="pbody">
-          <h3>J2-Hamiltonian Invariant–Driven Mode-Transition IMM for Maneuver Detection</h3>
-          <p class="meta">MO50125 Principles &amp; Applications of the Kalman Filter, KAIST &middot; Mar 2026–Present</p>
-          <p>
-            Satellite maneuver detection using an Interacting Multiple Model (IMM) filter whose transition
-            probability matrix is driven by the change in the J2-Hamiltonian invariant. The demo on the left
-            is a live, interactive 3D visualization — drag to rotate, or open it full-screen.
-            (Targeting an oral presentation at the KSAS Fall Conference 2026.)
-          </p>
-          <p class="stack">MATLAB &middot; Kalman Filter &middot; IMM &middot; Orbital Mechanics</p>
-        </div>
+        <p class="stack">MATLAB &middot; Kalman Filter &middot; IMM &middot; Orbital Mechanics</p>
       </div>
 
-      <!-- ===== Project 4: GNN / HAN (zoomable poster) ===== -->
       <div class="project">
-        <div class="pmedia">
-          <img class="zoom" src="GNN/poster_thumb.png" alt="Pathway-aware HAN poster"
-               data-large="GNN/poster_large.jpg" onerror="this.style.display='none'">
-          <p class="caption">
-            Click to enlarge &middot;
-            <a href="GNN/research_20210472_SiyouLee_poster.pdf" target="_blank" rel="noopener">PDF ↗</a>
-          </p>
+        <h3>Pathway-aware HAN for Alopecia Metabolite Discovery</h3>
+        <p class="meta">CS40701 Graph Machine Learning and Mining, KAIST &middot; Mar–Jun 2026</p>
+        <p>
+          Bridged yeast metabolites with an alopecia drug-target network by proposing a Heterogeneous
+          Graph Attention Network (HAN) with Random Walk Positional Encoding to surface candidate
+          metabolites of interest.
+        </p>
+        <div class="media">
+          <img src="GNN/research_20210472_SiyouLee_poster.pdf" alt="HAN graph" onerror="this.style.display='none'">
         </div>
-        <div class="pbody">
-          <h3>Pathway-aware HAN for Alopecia Metabolite Discovery</h3>
-          <p class="meta">CS40701 Graph Machine Learning and Mining, KAIST &middot; Mar–Jun 2026</p>
-          <p>
-            Bridged yeast metabolites with an alopecia drug-target network by proposing a Heterogeneous
-            Graph Attention Network (HAN) with Random Walk Positional Encoding to surface candidate
-            metabolites of interest.
-          </p>
-          <p class="stack">PyTorch &middot; Graph Neural Networks &middot; HAN &middot; Positional Encoding</p>
-        </div>
+        <p class="stack">PyTorch &middot; Graph Neural Networks &middot; HAN &middot; Positional Encoding</p>
       </div>
 
     </div>
@@ -360,22 +325,6 @@
   </div>
 </footer>
 
-<!-- Lightbox -->
-<div id="lightbox"><img alt=""></div>
-
-<script>
-  document.getElementById('year').textContent=new Date().getFullYear();
-
-  // 사진/포스터 클릭하면 크게 보기
-  var lb=document.getElementById('lightbox'), lbImg=lb.querySelector('img');
-  document.querySelectorAll('img.zoom').forEach(function(im){
-    im.addEventListener('click',function(){
-      lbImg.src=this.getAttribute('data-large')||this.src;
-      lb.classList.add('open');
-    });
-  });
-  lb.addEventListener('click',function(){lb.classList.remove('open');lbImg.src='';});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'){lb.classList.remove('open');lbImg.src='';}});
-</script>
+<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
 </body>
 </html>
