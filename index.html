@@ -82,6 +82,7 @@
     background:var(--accent);color:#fff;padding:7px 14px;border-radius:7px;
   }
   .btn:hover{text-decoration:none;opacity:.9;}
+  .btn-row{display:flex;flex-wrap:wrap;gap:8px;}
 
   /* YouTube embed (옵션) */
   .video-embed{position:relative;width:100%;aspect-ratio:16/9;}
@@ -138,16 +139,17 @@
           I am an undergraduate student in Electrical Engineering and Computer Science at
           <a href="https://www.kaist.ac.kr/en/" target="_blank" rel="noopener">KAIST</a>,
           currently a research intern at the Artificial Intelligence and Machine Learning Lab
-          advised by <a href="https://sites.google.com/site/changdyoo/" target="_blank" rel="noopener">Prof. Chang Dong Yoo</a>.
+          advised by <a href="https://sanctusfactory.com/family.php" target="_blank" rel="noopener">Prof. Chang Dong Yoo</a>.
           I recently spent a semester as an exchange student at the University of Texas at Austin.
         </p>
         <p>
-          I am interested in building machines that perceive, reason about, and physically interact
-          with the real world — bridging Embodied AI and robotics through Vision-Language-Action (VLA)
-          models, semantic 3D perception, and interpretable, physically grounded learning.
+          I am interested in building machines that perceive, reason about, and physically
+          interact with the real world — advancing Embodied AI and robotics through
+          Vision-Language-Action (VLA) models, semantic 3D perception, and interpretable,
+          physically grounded learning.
         </p>
         <p style="margin:0;font-size:0.92rem;color:var(--muted);">
-          Email: hanes1207 [at] kaist [dot] ac [dot] kr
+          Email: hanes1207@kaist.ac.kr
         </p>
       </div>
     </div>
@@ -159,11 +161,24 @@
   <section id="interests">
     <div class="wrap">
       <h2>Research Interests</h2>
-      <p>
-        My goal is to develop robots that understand and act in the physical world the way humans do —
-        grounding high-level reasoning in robust, uncertainty-aware perception and action. To this end
-        I am currently focusing on the following topics, though not limited to them:
-      </p>
+        <p>
+            I look for the <strong>structural fingerprint</strong> of a problem — a conserved quantity,
+            a canonical geometry, an invariant that has to hold — and build mechanisms on top of it,
+            using its violation or its skeleton as the signal.
+        </p>
+        <p>
+            My current focus is <strong>3D-grounded, uncertainty-aware perception for robot policy</strong>:
+            giving embodied agents explicit, interpretable spatial structure to reason and act on,
+            rather than relying on black-box end-to-end maps. I care about representations you can
+            inspect, not just ones that work.
+        </p>
+        <p>
+            This way of thinking travels. I have used the same instinct to turn a conserved Hamiltonian
+            into a maneuver-detection prior for satellite tracking, to anchor 3D instance segmentation on
+            geometric keypoints, and to ground physical presence as an access-control primitive. I am most
+            interested in the seams between fields — physics and estimation, geometry and learning,
+            perception and control — where the right abstraction from one domain unlocks another.
+        </p>
       <ul class="ri-list">
         <li>Embodied AI &amp; Vision-Language-Action (VLA) Models</li>
         <li>Autonomous Driving</li>
@@ -184,12 +199,11 @@
         <div class="pmedia">
           <video src="robot/robot.mp4" controls preload="metadata" playsinline
                  onerror="this.style.display='none'"></video>
-          <p class="caption">Short clip (3 s). Full demo on YouTube — see link.</p>
-          <!-- 전체 영상을 유튜브에 올린 뒤 아래 주석을 풀고 VIDEO_ID 교체하면 됩니다:
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Robot full demo" allowfullscreen></iframe>
+          <p class="caption">Short clip (3 s). Full demos on YouTube:</p>
+          <div class="btn-row">
+            <a class="btn" href="https://youtu.be/5QeHN4fPAbc" target="_blank" rel="noopener">Full demo 1 ↗</a>
+            <a class="btn" href="https://youtu.be/mJ6RCvMoR3g" target="_blank" rel="noopener">Full demo 2 ↗</a>
           </div>
-          -->
         </div>
         <div class="pbody">
           <h3>Exploring LLM-guided Autonomous Robots</h3>
@@ -310,22 +324,25 @@
 
       <div class="item">
         <div class="left">
-          <strong>Control and Intelligent Systems Lab, KAIST</strong>
-          <span>Undergraduate Researcher · Advisor: Prof. Heejin Ahn</span>
-          <span class="detail">Reproduced Constrained Policy Optimization (ICML 2017) baselines in MuJoCo
-            from the official code (safe reinforcement learning).</span>
-        </div>
-        <div class="year">Jul–Aug 2024</div>
-      </div>
-
-      <div class="item">
-        <div class="left">
           <strong>NC Lab, KAIST</strong>
           <span>Undergraduate Researcher · Advisor: Prof. Junehwa Song</span>
           <span class="detail">Socially appropriate use of noise-making home appliances — designed and ran a
-            preliminary Zigbee-based experiment.</span>
+            preliminary Zigbee-based experiment.
+            &middot; <a href="NCLab/NCLab_slides.pdf" target="_blank" rel="noopener">Slides ↗</a>
+            &middot; <a href="NCLab/NCLab_demo.mp4" target="_blank" rel="noopener">Demo ↗</a></span>
         </div>
         <div class="year">Mar–Aug 2025</div>
+      </div>
+      
+      <div class="item">
+        <div class="left">
+          <strong>Control and Intelligent Systems Lab, KAIST</strong>
+          <span>Undergraduate Researcher · Advisor: Prof. Heejin Ahn</span>
+          <span class="detail">Reproduced Constrained Policy Optimization (ICML 2017) baselines in MuJoCo
+            from the official code (safe reinforcement learning).
+            &middot; <a href="CISLab/CISLab_slides.pdf" target="_blank" rel="noopener">Slides ↗</a></span>
+        </div>
+        <div class="year">Jul–Aug 2024</div>
       </div>
 
       <div class="item">
