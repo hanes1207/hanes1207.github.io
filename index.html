@@ -66,16 +66,10 @@
   .pub .plinks{font-size:0.85rem;margin-top:6px;}
   .pub .plinks a{margin-right:12px;}
   .pub .pubtext{flex:1;min-width:0;}
-  .pub .pubthumb{flex:0 0 210px;width:210px;display:block;align-self:flex-start;}
-  .pub .pubthumb .thumbimg{position:relative;display:block;}
+  .pub .pubthumb{flex:0 0 210px;width:210px;align-self:flex-start;}
   .pub .pubthumb img{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);
                      background:var(--card);display:block;}
-  .pub .pubthumb .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
-  .pub .pubthumb .play span{width:46px;height:46px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;
-                            display:flex;align-items:center;justify-content:center;font-size:17px;padding-left:3px;
-                            transition:background .15s ease;}
-  .pub .pubthumb:hover .play span{background:rgba(0,0,0,.78);}
-  .pub .pubthumb .thumbcap{font-size:0.78rem;color:var(--muted);margin:6px 0 0;text-align:center;}
+  .pub .pubthumb img.zoom{cursor:zoom-in;}
   .status{display:inline-block;font-size:0.75rem;font-weight:600;padding:1px 8px;border-radius:999px;
           border:1px solid var(--line);color:var(--muted);vertical-align:middle;margin-left:6px;}
 
@@ -171,11 +165,8 @@
         </p>
         <p>
           I am interested in building machines that perceive, reason about, and physically
-          interact with the real world — robot learning, 3D scene understanding, and autonomous
-          driving, and more broadly AI that understands the physical world. My first-author paper,
-          <a href="#publications">SenseFuse</a>, is on
-          <a href="https://arxiv.org/abs/2609.20475" target="_blank" rel="noopener">arXiv</a>
-          and under review at ICRA 2027.
+          interact with the real world — 3D scene understanding, robot learning, and embodied AI; 
+          ultimately, AI that understands the physical world.
         </p>
         <p style="margin:0;font-size:0.92rem;color:var(--muted);">
           Email: hanes1207@kaist.ac.kr
@@ -210,12 +201,10 @@
             perception and control — where the right abstraction from one domain unlocks another.
         </p>
       <ul class="ri-list">
-        <li>Robot Learning &amp; Manipulation</li>
-        <li>3D Scene Understanding (Open-Vocabulary 3D Instance Segmentation)</li>
-        <li>Autonomous Driving</li>
-        <li>Semantic SLAM &amp; 3D Perception</li>
-        <li>Embodied AI &amp; Vision-Language-Action (VLA) Models</li>
-        <li>Physically Grounded, Interpretable AI</li>
+        <li>3D Scene Understanding</li>
+        <li>Robot Learning</li>
+        <li>Embodied AI</li>
+        <li>Physics</li>
       </ul>
     </div>
   </section>
@@ -226,15 +215,11 @@
 
       <div class="pub">
         <div class="num">[1]</div>
-        <a class="pubthumb" href="sensefuse/sensefuse_supplementary.mp4" target="_blank" rel="noopener"
-           title="Play the supplementary video">
-          <span class="thumbimg">
-            <img src="sensefuse/SenseFuse_cover.png" alt="SenseFuse teaser: 2D views label the mask table, the 3D shape head labels it folded chair, and the fusion recovers chair"
-                 onerror="this.style.display='none'">
-            <span class="play"><span>&#9654;</span></span>
-          </span>
-          <p class="thumbcap">Supplementary video &#8599;</p>
-        </a>
+        <div class="pubthumb">
+          <img class="zoom" src="sensefuse/SenseFuse_cover.png"
+               alt="SenseFuse teaser: 2D views label the mask table, the 3D shape head labels it folded chair, and the fusion recovers chair"
+               data-large="sensefuse/SenseFuse_cover.png" onerror="this.style.display='none'">
+        </div>
         <div class="pubtext">
           <div class="title">SenseFuse: Label-Free Fusion of Image and Shape Encoders for Open-Vocabulary
             3D Instance Segmentation <span class="status">Under review</span></div>
@@ -339,28 +324,6 @@
             (Targeting an oral presentation at the KSAS Fall Conference 2026.)
           </p>
           <p class="stack">MATLAB &middot; Kalman Filter &middot; IMM &middot; Orbital Mechanics</p>
-        </div>
-      </div>
-
-      <!-- ===== Project 4: GNN / HAN (zoomable poster) ===== -->
-      <div class="project">
-        <div class="pmedia">
-          <img class="zoom" src="GNN/poster_thumb.png" alt="Pathway-aware HAN poster"
-               data-large="GNN/poster_large.jpg" onerror="this.style.display='none'">
-          <p class="caption">
-            Click to enlarge &middot;
-            <a href="GNN/research_20210472_SiyouLee_poster.pdf" target="_blank" rel="noopener">PDF ↗</a>
-          </p>
-        </div>
-        <div class="pbody">
-          <h3>Pathway-aware HAN for Alopecia Metabolite Discovery</h3>
-          <p class="meta">CS40701 Graph Machine Learning and Mining, KAIST &middot; Mar–Jun 2026</p>
-          <p>
-            Bridged yeast metabolites with an alopecia drug-target network by proposing a Heterogeneous
-            Graph Attention Network (HAN) with Random Walk Positional Encoding to surface candidate
-            metabolites of interest.
-          </p>
-          <p class="stack">PyTorch &middot; Graph Neural Networks &middot; HAN &middot; Positional Encoding</p>
         </div>
       </div>
 
