@@ -65,6 +65,8 @@
   .pub .desc{font-size:0.92rem;margin-top:8px;}
   .pub .plinks{font-size:0.85rem;margin-top:6px;}
   .pub .plinks a{margin-right:12px;}
+  .pub .pubmedia{margin-top:12px;max-width:520px;}
+  .pub .pubmedia video{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#000;display:block;}
   .status{display:inline-block;font-size:0.75rem;font-weight:600;padding:1px 8px;border-radius:999px;
           border:1px solid var(--line);color:var(--muted);vertical-align:middle;margin-left:6px;}
 
@@ -159,7 +161,9 @@
           I am interested in building machines that perceive, reason about, and physically
           interact with the real world — robot learning, 3D scene understanding, and autonomous
           driving, and more broadly AI that understands the physical world. My first-author paper,
-          <a href="#publications">SenseFuse</a>, is currently under review at ICRA 2027.
+          <a href="#publications">SenseFuse</a>, is on
+          <a href="https://arxiv.org/abs/2609.20475" target="_blank" rel="noopener">arXiv</a>
+          and under review at ICRA 2027.
         </p>
         <p style="margin:0;font-size:0.92rem;color:var(--muted);">
           Email: hanes1207@kaist.ac.kr
@@ -221,7 +225,16 @@
             scene-level weight estimated from a single scene's unlabeled proposals in milliseconds. Median +7.1 pts,
             recovering 67–100% of the oracle-weight gain on ScanNet200, Replica, and ScanNet++.
           </p>
-          <!-- <div class="plinks"><a href="#" target="_blank" rel="noopener">arXiv ↗</a><a href="#" target="_blank" rel="noopener">Code ↗</a></div> -->
+          <div class="plinks">
+            <a href="https://arxiv.org/abs/2609.20475" target="_blank" rel="noopener">arXiv:2609.20475 ↗</a>
+            <a href="https://arxiv.org/pdf/2609.20475" target="_blank" rel="noopener">PDF ↗</a>
+            <!-- <a href="#" target="_blank" rel="noopener">Code ↗</a> -->
+          </div>
+          <div class="pubmedia">
+            <video src="sensefuse/sensefuse_supplementary.mp4" controls preload="metadata" playsinline
+                   onerror="this.style.display='none'"></video>
+            <p class="caption">Supplementary video</p>
+          </div>
         </div>
       </div>
 
