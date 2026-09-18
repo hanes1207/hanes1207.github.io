@@ -65,8 +65,17 @@
   .pub .desc{font-size:0.92rem;margin-top:8px;}
   .pub .plinks{font-size:0.85rem;margin-top:6px;}
   .pub .plinks a{margin-right:12px;}
-  .pub .pubmedia{margin-top:12px;max-width:520px;}
-  .pub .pubmedia video{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#000;display:block;}
+  .pub .pubtext{flex:1;min-width:0;}
+  .pub .pubthumb{flex:0 0 210px;width:210px;display:block;align-self:flex-start;}
+  .pub .pubthumb .thumbimg{position:relative;display:block;}
+  .pub .pubthumb img{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);
+                     background:var(--card);display:block;}
+  .pub .pubthumb .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+  .pub .pubthumb .play span{width:46px;height:46px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;
+                            display:flex;align-items:center;justify-content:center;font-size:17px;padding-left:3px;
+                            transition:background .15s ease;}
+  .pub .pubthumb:hover .play span{background:rgba(0,0,0,.78);}
+  .pub .pubthumb .thumbcap{font-size:0.78rem;color:var(--muted);margin:6px 0 0;text-align:center;}
   .status{display:inline-block;font-size:0.75rem;font-weight:600;padding:1px 8px;border-radius:999px;
           border:1px solid var(--line);color:var(--muted);vertical-align:middle;margin-left:6px;}
 
@@ -128,6 +137,9 @@
     .intro-text h1{font-size:1.9rem;}
     .ri-list{grid-template-columns:1fr;}
     .project{flex-direction:column;gap:16px;}
+    .pub{flex-wrap:wrap;}
+    .pub .pubthumb{flex-basis:100%;width:100%;order:2;}
+    .pub .pubtext{flex-basis:100%;order:1;}
     .pmedia{width:100%;flex-basis:auto;}
     .item{flex-direction:column;gap:4px;}
     .item .year{text-align:left;}
@@ -214,7 +226,16 @@
 
       <div class="pub">
         <div class="num">[1]</div>
-        <div>
+        <a class="pubthumb" href="sensefuse/sensefuse_supplementary.mp4" target="_blank" rel="noopener"
+           title="Play the supplementary video">
+          <span class="thumbimg">
+            <img src="sensefuse/SenseFuse_cover.png" alt="SenseFuse teaser: 2D views label the mask table, the 3D shape head labels it folded chair, and the fusion recovers chair"
+                 onerror="this.style.display='none'">
+            <span class="play"><span>&#9654;</span></span>
+          </span>
+          <p class="thumbcap">Supplementary video &#8599;</p>
+        </a>
+        <div class="pubtext">
           <div class="title">SenseFuse: Label-Free Fusion of Image and Shape Encoders for Open-Vocabulary
             3D Instance Segmentation <span class="status">Under review</span></div>
           <div class="authors"><strong>Euiseok Han</strong>, Tri Ton, Hwanhee Kim, Seungyeon Ryu, Chang D. Yoo</div>
@@ -228,19 +249,15 @@
           <div class="plinks">
             <a href="https://arxiv.org/abs/2609.20475" target="_blank" rel="noopener">arXiv:2609.20475 ↗</a>
             <a href="https://arxiv.org/pdf/2609.20475" target="_blank" rel="noopener">PDF ↗</a>
+            <a href="sensefuse/sensefuse_supplementary.mp4" target="_blank" rel="noopener">Video ↗</a>
             <!-- <a href="#" target="_blank" rel="noopener">Code ↗</a> -->
-          </div>
-          <div class="pubmedia">
-            <video src="sensefuse/sensefuse_supplementary.mp4" controls preload="metadata" playsinline
-                   onerror="this.style.display='none'"></video>
-            <p class="caption">Supplementary video</p>
           </div>
         </div>
       </div>
 
       <div class="pub">
         <div class="num">[2]</div>
-        <div>
+        <div class="pubtext">
           <div class="title">Hamiltonian Invariant-Driven Mode-Transition IMM for Satellite Maneuver Detection
             <span class="status">Manuscript in preparation</span></div>
           <div class="authors"><strong>Euiseok Han</strong>, Sangheon Choi, Seung-Hyun Kong</div>
