@@ -59,7 +59,9 @@
   .pub{display:flex;gap:14px;padding:18px 0;border-top:1px solid var(--line);}
   .pub:first-of-type{border-top:none;padding-top:0;}
   .pub .num{flex:0 0 30px;color:var(--muted);font-weight:600;}
-  .pub .title{font-weight:600;font-size:1.02rem;}
+  .pub .title{font-weight:600;font-size:1.02rem;display:flex;justify-content:space-between;
+              gap:14px;align-items:baseline;}
+  .pub .title>span:first-child{flex:1;min-width:0;}
   .pub .authors{font-size:0.92rem;margin-top:2px;}
   .pub .venue{font-size:0.88rem;color:var(--muted);margin-top:2px;}
   .pub .desc{font-size:0.92rem;margin-top:8px;}
@@ -70,14 +72,17 @@
   .pub .pubthumb img{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);
                      background:var(--card);display:block;}
   .pub .pubthumb img.zoom{cursor:zoom-in;}
-  .status{display:inline-block;font-size:0.75rem;font-weight:600;padding:1px 8px;border-radius:999px;
-          border:1px solid var(--line);color:var(--muted);vertical-align:middle;margin-left:6px;}
+  .status{flex:0 0 auto;font-size:0.75rem;font-weight:600;padding:1px 8px;border-radius:999px;
+          border:1px solid var(--line);color:var(--muted);white-space:nowrap;}
 
   /* Projects — 미디어를 글 옆에 배치 (Alvin 스타일) */
   .project{display:flex;gap:26px;align-items:flex-start;padding:30px 0;border-top:1px solid var(--line);}
   .project:first-of-type{border-top:none;padding-top:0;}
   .pmedia{flex:0 0 300px;width:300px;}
   .pbody{flex:1;min-width:0;}
+  .pbody .ptop{display:flex;justify-content:space-between;gap:16px;align-items:baseline;}
+  .pbody .ptop h3{flex:1;min-width:0;}
+  .pbody .pdate{flex:0 0 auto;font-size:0.9rem;color:var(--muted);white-space:nowrap;}
   .pbody h3{margin:0 0 4px;font-size:1.12rem;font-weight:600;}
   .pbody .meta{font-size:0.85rem;color:var(--muted);margin:0 0 12px;}
   .pbody p{margin:0 0 10px;}
@@ -133,6 +138,8 @@
     .intro-text h1{font-size:1.9rem;}
     .ri-list{grid-template-columns:1fr;}
     .project{flex-direction:column;gap:16px;}
+    .pbody .ptop{flex-direction:column;gap:2px;align-items:flex-start;}
+    .pub .title{flex-direction:column;align-items:flex-start;gap:5px;}
     .pub{flex-wrap:wrap;}
     .pub .pubthumb{flex-basis:100%;width:100%;order:2;}
     .pub .pubtext{flex-basis:100%;order:1;}
@@ -223,8 +230,9 @@
                data-large="sensefuse/SenseFuse_cover.png" onerror="this.style.display='none'">
         </div>
         <div class="pubtext">
-          <div class="title">SenseFuse: Label-Free Fusion of Image and Shape Encoders for Open-Vocabulary
-            3D Instance Segmentation <span class="status">Under review</span></div>
+          <div class="title"><span>SenseFuse: Label-Free Fusion of Image and Shape Encoders for
+            Open-Vocabulary 3D Instance Segmentation</span>
+            <span class="status">Under review</span></div>
           <div class="authors"><strong>Euiseok Han</strong>, Tri Ton, Hwanhee Kim, Seungyeon Ryu, Chang D. Yoo</div>
           <div class="venue">Submitted to IEEE International Conference on Robotics and Automation (ICRA) 2027</div>
           <p class="desc">
@@ -245,7 +253,8 @@
       <div class="pub">
         <div class="num">[2]</div>
         <div class="pubtext">
-          <div class="title">Hamiltonian Invariant-Driven Mode-Transition IMM for Satellite Maneuver Detection
+          <div class="title"><span>Hamiltonian Invariant-Driven Mode-Transition IMM for Satellite
+            Maneuver Detection</span>
             <span class="status">Manuscript in preparation</span></div>
           <div class="authors"><strong>Euiseok Han</strong>, Sangheon Choi, Seung-Hyun Kong</div>
           <p class="desc">
@@ -275,8 +284,11 @@
           </div>
         </div>
         <div class="pbody">
-          <h3>LLM-Guided Autonomous Robots</h3>
-          <p class="meta">EE40078 Introduction to Multi-disciplinary Robotics, KAIST &middot; Mar–Jun 2026</p>
+          <div class="ptop">
+            <h3>LLM-Guided Autonomous Robots</h3>
+            <span class="pdate">Mar–Jun 2026</span>
+          </div>
+          <p class="meta">EE40078 Introduction to Multi-disciplinary Robotics, KAIST</p>
           <p>
             An LLM-guided autonomous mobile delivery robot. The stack integrates RTAB-Map localization,
             path planning, and vision-based object pick-up, letting the robot interpret natural-language
@@ -297,8 +309,11 @@
           </div>
         </div>
         <div class="pbody">
-          <h3>Nubzuki's Adventure — Segmentation &amp; Rendering Contest</h3>
-          <p class="meta">CS40709 Machine Learning for 3D Data, KAIST &middot; Mar–Jun 2026</p>
+          <div class="ptop">
+            <h3>Nubzuki's Adventure — Segmentation &amp; Rendering Contest</h3>
+            <span class="pdate">Mar–Jun 2026</span>
+          </div>
+          <p class="meta">CS40709 Machine Learning for 3D Data, KAIST</p>
           <p>
             Class-agnostic 3D instance segmentation of Nubzuki (the KAIST mascot) synthesized in MultiScan,
             using a PCA-aware encoder, <em>NubzukiPriorNet</em>. I also produced a Gaussian-splatting-based
@@ -316,8 +331,11 @@
           <a class="btn" href="kf/orbit_demo_2d.html" target="_blank" rel="noopener">Launch interactive demo ↗</a>
         </div>
         <div class="pbody">
-          <h3>J2-Hamiltonian Invariant–Driven Mode-Transition IMM for Maneuver Detection</h3>
-          <p class="meta">MO50125 Principles &amp; Applications of the Kalman Filter, KAIST &middot; Mar 2026–Present</p>
+          <div class="ptop">
+            <h3>J2-Hamiltonian Invariant–Driven Mode-Transition IMM for Maneuver Detection</h3>
+            <span class="pdate">Mar 2026–Present</span>
+          </div>
+          <p class="meta">MO50125 Principles &amp; Applications of the Kalman Filter, KAIST</p>
           <p>
             Satellite maneuver detection using an Interacting Multiple Model (IMM) filter whose transition
             probability matrix is driven by a measurement-side CUSUM on the J2-Hamiltonian Lie residual.
