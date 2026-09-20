@@ -173,9 +173,8 @@
           I recently spent a semester as an exchange student at the University of Texas at Austin.
         </p>
         <p>
-          I am interested in building machines that perceive, reason about, and physically
-          interact with the real world — 3D scene understanding, robot learning, and embodied AI; 
-          ultimately, AI that understands the physical world.
+          I am interested in building machines that perceive, reason about, and physically interact with the real world — 3D scene understanding, robot learning, and embodied AI. 
+          I believe the next generation of AI will be one that truly understands the physical world, and I want to be at the forefront of building it.
         </p>
         <p style="margin:0;font-size:0.92rem;color:var(--muted);">
           Email: hanes1207@kaist.ac.kr
@@ -193,21 +192,23 @@
         <p>
             I look for the <strong>structural fingerprint</strong> of a problem — a conserved quantity,
             a canonical geometry, an invariant that has to hold — and build mechanisms on top of it,
-            using its violation or its skeleton as the signal.
+            using its structure or its violation as a signal.
         </p>
         <p>
-            My current focus is <strong>3D-grounded, uncertainty-aware perception for robot policy</strong>:
-            giving embodied agents explicit, interpretable spatial structure to reason and act on,
-            rather than relying on black-box end-to-end maps. I care about representations you can
-            inspect, not just ones that work.
+            My current focus is <strong>uncertainty-aware structure for embodied decision-making</strong>:
+            giving robots explicit spatial and physical structure to reason and act upon, so that
+            large data-driven models become more sample-efficient, more robust, and easier to inspect.
+            A robot that operates reliably in the physical world must carry a model of that world —
+            not in place of learning, but as the scaffold upon which learning rests.
         </p>
         <p>
-            This way of thinking travels. I have used the same instinct to turn a conserved Hamiltonian
-            into a maneuver-detection prior for satellite tracking, to fuse 2D image and 3D shape encoders
-            through their largely disjoint failure patterns, to anchor 3D instance segmentation on
-            geometric keypoints, and to ground physical presence as an access-control primitive. I am most
-            interested in the seams between fields — physics and estimation, geometry and learning,
-            perception and control — where the right abstraction from one domain unlocks another.
+            Two recent projects shaped this view. 
+            In <strong>SenseFuse</strong>, I found that 2D image and 3D shape encoders fail in largely disjoint ways, 
+            and that this disagreement itself is a label-free signal: 
+            a per-scene fusion weight estimated from it in milliseconds achieves near-oracle performance. 
+            In <strong>H-IMM</strong>, I turned a conserved Hamiltonian into a maneuver-detection prior for satellite tracking, with explicit false-alarm and latency bounds.
+            Both taught me the same thing — uncertainty and structure are not separate quantities, and the most useful abstractions sit at the seams between fields: 
+            physics and estimation, geometry and learning, perception and control.
         </p>
       <ul class="ri-list">
         <li>3D Scene Understanding</li>
@@ -259,7 +260,7 @@
           <div class="authors"><strong>Euiseok Han</strong>, Sangheon Choi, Seung-Hyun Kong</div>
           <p class="desc">
             An Interacting Multiple Model (IMM) filter whose transition probabilities are driven by a CUSUM statistic
-            on the J2-Hamiltonian Lie residual, an invariant of coast dynamics that is broken only by thrust.
+            on the J2-Hamiltonian residual, an invariant of coast dynamics that is broken only by thrust.
             See the <a href="#kf-project">interactive demo</a> below.
           </p>
         </div>
@@ -290,9 +291,9 @@
           </div>
           <p class="meta">EE40078 Introduction to Multi-disciplinary Robotics, KAIST</p>
           <p>
-            An LLM-guided autonomous mobile delivery robot. The stack integrates RTAB-Map localization,
-            path planning, and vision-based object pick-up, letting the robot interpret natural-language
-            instructions and carry out delivery tasks end to end.
+            An LLM-guided autonomous mobile delivery robot. 
+            The stack integrates RTAB-Map localization, path planning, and vision-based object pick-up, 
+            enabling the robot to interpret natural-language instructions and execute delivery tasks end-to-end.
           </p>
           <p class="stack">ROS &middot; Python &middot; RTAB-Map &middot; LLM &middot; Path Planning</p>
         </div>
@@ -337,10 +338,9 @@
           </div>
           <p class="meta">MO50125 Principles &amp; Applications of the Kalman Filter, KAIST</p>
           <p>
-            Satellite maneuver detection using an Interacting Multiple Model (IMM) filter whose transition
-            probability matrix is driven by a measurement-side CUSUM on the J2-Hamiltonian Lie residual.
-            Watch the clip, or launch the live interactive 3D visualization to drag and explore the orbit yourself.
-            Now being written up as a paper <a href="#publications">[2]</a>.
+            Satellite maneuver detection using an Interacting Multiple Model (IMM) filter, 
+            whose transition probability matrix is driven by a measurement-side CUSUM on the J2-Hamiltonian residual.
+            Manuscript in preparation <a href="#publications">[2]</a>.
           </p>
           <p class="stack">MATLAB &middot; Kalman Filter &middot; IMM &middot; Orbital Mechanics</p>
         </div>
@@ -381,9 +381,10 @@
           <strong>Artificial Intelligence &amp; Machine Learning Lab, KAIST</strong>
           <span>Undergraduate Researcher · Advisor: Prof. Chang D. Yoo</span>
           <span class="detail">Led <a href="#publications">SenseFuse [1]</a>: label-free fusion of frozen 2D image
-            and 3D shape encoders for open-vocabulary 3D instance segmentation (under review, ICRA 2027).
-            URP project <em>From Point Cloud to Actions</em>: 3D structural keypoint-conditioned hierarchical
-            robot policy learning with a keypoint-conditioned diffusion policy for spatially robust manipulation.</span>
+            and 3D shape encoders for open-vocabulary 3D instance segmentation.</span>
+          <span class="detail">URP project <em>From Point Cloud to Actions</em>: 3D structural keypoint-conditioned
+            hierarchical robot policy learning with a keypoint-conditioned diffusion policy for spatially
+            robust manipulation.</span>
         </div>
         <div class="year">Jan–Feb 2025, Jan 2026 – Present</div>
       </div>
@@ -392,8 +393,10 @@
         <div class="left">
           <strong>NC Lab, KAIST</strong>
           <span>Undergraduate Researcher · Advisor: Prof. Junehwa Song</span>
-          <span class="detail">Socially appropriate use of noise-making home appliances in high-density urban
-            housing — participated in experiment design and conducted a preliminary Zigbee-based experiment.</span>
+          <span class="detail"><em>Socially-appropriate Use of Noise-making Everyday Appliances in
+            High-density Urban Housing</em></span>
+          <span class="detail">Participated in experiment design and conducted a preliminary Zigbee-based
+            experiment.</span>
           <span class="xlinks">
             <a href="NCLab/NCLab_slides.pdf" target="_blank" rel="noopener">Slides ↗</a>
             <a href="NCLab/NCLab_demo.mp4" target="_blank" rel="noopener">Demo ↗</a></span>
@@ -415,8 +418,8 @@
 
       <div class="item">
         <div class="left">
-          <strong>KAMD Operations Center, Republic of Korea Air Force</strong>
-          <span>Information System Operator, Staff Sergeant (mandatory military service)</span>
+          <strong>Republic of Korea Air Force (mandatory military service)</strong>
+          <span>Information System Operator, Staff Sergeant, KAMD Operations Center</span>
           <span class="detail">Managed real-time data-processing servers; ensured 24/7 availability through
             hardware-level maintenance.</span>
         </div>
