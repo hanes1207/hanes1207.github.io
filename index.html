@@ -94,6 +94,8 @@
   }
   .pmedia video{background:#000;}
   .pmedia .stack-media{display:flex;flex-direction:column;gap:10px;}
+  .pmedia .mlinks{font-size:0.85rem;margin:8px 0 0;}
+  .pmedia .mlinks a{margin-right:14px;}
   .pmedia img.zoom{cursor:zoom-in;}
   .caption{font-size:0.78rem;color:var(--muted);margin:6px 0 0;}
 
@@ -228,7 +230,7 @@
       <div class="pub">
         <div class="num">[1]</div>
         <div class="pubthumb">
-          <img class="zoom" src="sensefuse/SenseFuse_cover.png"
+          <img class="zoom" src="sensefuse/SenseFuse_cover_thumb.jpg"
                alt="SenseFuse teaser: 2D views label the mask table, the 3D shape head labels it folded chair, and the fusion recovers chair"
                data-large="sensefuse/SenseFuse_cover.png" onerror="this.style.display='none'">
         </div>
@@ -333,9 +335,10 @@
       <!-- ===== Project 1: Robot (video on the side) ===== -->
       <div class="project">
         <div class="pmedia">
-          <video src="robot/robot.mp4" controls preload="metadata" playsinline
-                 onerror="this.style.display='none'"></video>
-          <p class="caption">Short clip (3 s). Full demos on YouTube:</p>
+          <a href="https://youtu.be/5QeHN4fPAbc" target="_blank" rel="noopener">
+            <img src="robot/robot_poster.jpg" alt="LLM-guided delivery robot demo"
+                 onerror="this.style.display='none'"></a>
+          <p class="caption">Full demos on YouTube:</p>
           <div class="btn-row">
             <a class="btn" href="https://youtu.be/5QeHN4fPAbc" target="_blank" rel="noopener">Full demo 1 ↗</a>
             <a class="btn" href="https://youtu.be/mJ6RCvMoR3g" target="_blank" rel="noopener">Full demo 2 ↗</a>
@@ -359,12 +362,11 @@
       <!-- ===== Project 2: Nubzuki (video + zoomable image) ===== -->
       <div class="project">
         <div class="pmedia">
-          <div class="stack-media">
-            <video src="3dml/rendered.mp4" controls preload="metadata" playsinline
-                   onerror="this.style.display='none'"></video>
-            <img class="zoom" src="3dml/cluster_recover.png" alt="Nubzuki instance segmentation"
-                 data-large="3dml/cluster_recover.png" onerror="this.style.display='none'">
-          </div>
+          <img class="zoom" src="3dml/cluster_recover.png" alt="Nubzuki instance segmentation"
+               data-large="3dml/cluster_recover.png" onerror="this.style.display='none'">
+          <p class="mlinks">
+            <a href="3dml/rendered.mp4" target="_blank" rel="noopener">Rendered short film ↗</a>
+          </p>
         </div>
         <div class="pbody">
           <div class="ptop">
@@ -384,7 +386,7 @@
       <!-- ===== Project 3: KF / IMM (live interactive HTML demo + open link) ===== -->
       <div class="project" id="kf-project">
         <div class="pmedia">
-          <video src="kf/kf.mp4" controls preload="metadata" playsinline
+          <video src="kf/kf.mp4" controls preload="none" playsinline poster="kf/kf_poster.jpg"
                  onerror="this.style.display='none'"></video>
           <a class="btn" href="kf/orbit_demo_2d.html" target="_blank" rel="noopener">Launch interactive demo ↗</a>
         </div>
