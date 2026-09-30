@@ -209,7 +209,7 @@
             In <strong>SenseFuse</strong>, I found that 2D image and 3D shape encoders fail in largely disjoint ways, 
             and that this disagreement itself is a label-free signal: 
             a per-scene fusion weight estimated from it in milliseconds recovers most of the gain an oracle weight would give. 
-            In <strong>RD-IMM</strong>, I drove an IMM filter's mode transitions from a reference filter kept outside its mixing loop, removing the feedback that makes adaptive IMMs miss small satellite maneuvers or raise false alarms.
+            In <strong>H-IMM</strong>, I turned a conserved Hamiltonian into a maneuver-detection prior for satellite tracking, with explicit false-alarm and latency bounds.
             Both taught me the same thing — uncertainty and structure are not separate quantities, and the most useful abstractions sit at the seams between fields: 
             physics and estimation, geometry and learning, perception and control.
         </p>
@@ -390,13 +390,13 @@
         </div>
         <div class="pbody">
           <div class="ptop">
-            <h3>Reference-Driven IMM (RD-IMM) for Satellite Maneuver Detection</h3>
+            <h3>J2-Hamiltonian Invariant–Driven Mode-Transition IMM for Maneuver Detection</h3>
             <span class="pdate">Mar 2026–Present</span>
           </div>
           <p class="meta">MO50125 Principles &amp; Applications of the Kalman Filter, KAIST</p>
           <p>
-            Satellite maneuver detection using an Interacting Multiple Model (IMM) filter
-            whose transition probability matrix is driven by the NIS of a reference coast filter outside the mixing loop.
+            Satellite maneuver detection using an Interacting Multiple Model (IMM) filter, 
+            whose transition probability matrix is driven by a measurement-side CUSUM on the J2-Hamiltonian residual.
             Manuscript in preparation <a href="#publications">[2]</a>.
           </p>
           <p class="stack">MATLAB &middot; Kalman Filter &middot; IMM &middot; Orbital Mechanics</p>
