@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Euiseok Han</title>
-<meta name="description" content="Personal academic portfolio of Euiseok Han, EE & CS @ KAIST — 3D scene understanding, robot learning, embodied AI, and physical reasoning.">
+<meta name="description" content="Personal academic portfolio of Euiseok Han, EE & CS @ KAIST — uncertainty-aware decision making for autonomous systems: multimodal perception, state estimation, and robot policies.">
 <style>
   :root{
     --bg:#ffffff;
@@ -173,11 +173,8 @@
           I recently spent a semester as an exchange student at the University of Texas at Austin.
         </p>
         <p>
-          My research focuses on 3D perception and estimation for robots, aiming to make learned policies reliable enough for real-world deployment.
-          My recent first-author paper,
-          <a href="#publications">SenseFuse</a> (under review at ICRA 2027), is available on
-          <a href="https://arxiv.org/abs/2609.20475" target="_blank" rel="noopener">arXiv</a>,
-          along with open-source code and a supplementary video.
+          My research focuses on uncertainty-aware decision making for autonomous systems,
+          across multimodal perception, state estimation, and robot policies.
         </p>
         <p style="margin:0;font-size:0.92rem;color:var(--muted);">
           Email: hanes1207@kaist.ac.kr
@@ -193,31 +190,25 @@
     <div class="wrap">
       <h2>Research Interests</h2>
         <p>
-            I look for the <strong>structural fingerprint</strong> of a problem — a conserved quantity,
-            a canonical geometry, an invariant that has to hold — and build mechanisms on top of it,
-            using its structure or its violation as a signal.
+            My research goal is <strong>uncertainty-aware decision making for autonomous systems</strong>.
+            Robots act on information that is incomplete or unreliable, so they must judge how much to trust each source
+            before deciding what to do. For long-horizon tasks, they must also understand which objects in a scene matter,
+            how those objects relate to one another, and how the scene changes over time.
         </p>
         <p>
-            My current focus is <strong>uncertainty-aware structure for embodied decision-making</strong>:
-            giving robots explicit spatial and physical structure to reason and act upon, so that
-            large data-driven models become more sample-efficient, more robust, and easier to inspect.
-            A robot that operates reliably in the physical world must carry a model of that world —
-            not in place of learning, but as the scaffold upon which learning rests.
-        </p>
-        <p>
-            Two recent projects shaped this view. 
-            In <strong>SenseFuse</strong>, I found that 2D image and 3D shape encoders fail in largely disjoint ways, 
-            and that this disagreement itself is a label-free signal: 
-            a per-scene fusion weight estimated from it in milliseconds recovers most of the gain an oracle weight would give. 
-            In <strong>H-IMM</strong>, I turned a conserved Hamiltonian into a maneuver-detection prior for satellite tracking, with explicit false-alarm and latency bounds.
-            Both taught me the same thing — uncertainty and structure are not separate quantities, and the most useful abstractions sit at the seams between fields: 
-            physics and estimation, geometry and learning, perception and control.
+            I have approached this goal from three directions.
+            In <strong>perception</strong>, <a href="#publications">SenseFuse</a> weighs frozen 2D image and 3D shape encoders
+            by a label-free reliability estimate, exploiting the fact that their failures are largely disjoint.
+            In <strong>estimation</strong>, <a href="#publications">RD-IMM</a> drives the model-switching probabilities of an
+            IMM filter from a reference filter outside the IMM, breaking a feedback loop that either sustains false alarms or
+            suppresses real detections.
+            In <strong>policy</strong>, I am studying how uncertainty in perception and estimation propagates into a robot's actions.
         </p>
       <ul class="ri-list">
+        <li>Reliability-Aware Multimodal Perception</li>
+        <li>Uncertainty-Aware State Estimation</li>
+        <li>Uncertainty-Aware Robot Policies</li>
         <li>3D Scene Understanding</li>
-        <li>Robot Learning &amp; Manipulation</li>
-        <li>Uncertainty-Aware Estimation</li>
-        <li>Embodied AI</li>
       </ul>
     </div>
   </section>
@@ -264,9 +255,12 @@
             RD-IMM drives the transition probabilities of an Interacting Multiple Model (IMM) filter from the normalized
             innovation squared of a reference coast filter that is not mixed with the IMM, breaking the feedback loop of
             adaptive-TPM methods. It detects small burns that a fixed-TPM IMM misses, with few false declarations, and
-            cuts post-burn position error by more than 50% versus single-filter approaches.
-            See the <a href="#kf-project">interactive demo</a> below.
+            reduces the position error after a small in-track burn by more than 50% compared with single-filter approaches.
           </p>
+          <div class="plinks">
+            <!-- arXiv 링크 나오면 추가: <a href="https://arxiv.org/abs/XXXX.XXXXX" target="_blank" rel="noopener">arXiv:XXXX.XXXXX ↗</a> -->
+            <a href="rdimm/index.html" target="_blank" rel="noopener">Interactive demo ↗</a>
+          </div>
         </div>
       </div>
 
@@ -386,7 +380,7 @@
         <div class="pmedia">
           <video src="kf/kf.mp4" controls preload="none" playsinline poster="kf/kf_poster.jpg"
                  onerror="this.style.display='none'"></video>
-          <a class="btn" href="kf/orbit_demo_2d.html" target="_blank" rel="noopener">Launch interactive demo ↗</a>
+          <a class="btn" href="kf/orbit_demo_2d.html" target="_blank" rel="noopener">Launch H-IMM demo ↗</a>
         </div>
         <div class="pbody">
           <div class="ptop">
@@ -397,7 +391,8 @@
           <p>
             Satellite maneuver detection using an Interacting Multiple Model (IMM) filter, 
             whose transition probability matrix is driven by a measurement-side CUSUM on the J2-Hamiltonian residual.
-            Developed into RD-IMM <a href="#publications">[2]</a>, which drives the transitions from the NIS of a reference coast filter outside the IMM.
+            Developed into RD-IMM <a href="#publications">[2]</a>, which drives the transitions from the NIS of a reference coast filter outside the IMM
+            (<a href="rdimm/index.html" target="_blank" rel="noopener">RD-IMM demo ↗</a>).
           </p>
           <p class="stack">MATLAB &middot; Kalman Filter &middot; IMM &middot; Orbital Mechanics</p>
         </div>
