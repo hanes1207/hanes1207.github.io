@@ -5,135 +5,107 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RD-IMM Interactive Demo</title>
 <meta name="description" content="Interactive demo of RD-IMM: IMM transition probabilities driven by the NIS of a reference coast filter, replaying the 50 Monte Carlo runs of the paper.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.32.0/plotly.min.js"></script>
 <script src="rdimm_data.js"></script>
+<script src="rdimm_geom.js"></script>
 <style>
   :root{
     color-scheme:light;
-    --bg:#ffffff; --surface:#fcfcfb; --card:#f7f7f5; --ink:#1a1a1a; --ink2:#52514e; --muted:#6b7280;
-    --line:#e5e7eb; --grid:#eeeeec; --accent:#2563eb; --hl:#eef4fd; --warm:#f2f2ef;
-    --prop:#2a78d6; --goff:#eb6834; --jia:#1baf7a; --aimm:#eda100; --own:#e87ba4; --gate:#4a3aa7; --ekf:#008300;
-    --burn:#3a3a38; --loop:#e34948;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      color-scheme:dark;
-      --bg:#141413; --surface:#1a1a19; --card:#20201e; --ink:#f3f3f1; --ink2:#c3c2b7; --muted:#9a998f;
-      --line:#34342f; --grid:#2a2a27; --accent:#5b9bf0; --hl:#1d2a3d; --warm:#232320;
-      --prop:#3987e5; --goff:#d95926; --jia:#199e70; --aimm:#c98500; --own:#d55181; --gate:#9085e9; --ekf:#2f9a2f;
-      --burn:#d8d7cf; --loop:#e66767;
-    }
-  }
-  :root[data-theme="dark"]{
-    color-scheme:dark;
-    --bg:#141413; --surface:#1a1a19; --card:#20201e; --ink:#f3f3f1; --ink2:#c3c2b7; --muted:#9a998f;
-    --line:#34342f; --grid:#2a2a27; --accent:#5b9bf0; --hl:#1d2a3d; --warm:#232320;
-    --prop:#3987e5; --goff:#d95926; --jia:#199e70; --aimm:#c98500; --own:#d55181; --gate:#9085e9; --ekf:#2f9a2f;
-    --burn:#d8d7cf; --loop:#e66767;
+    --bg:#ffffff; --card:#f7f7f6; --ink:#111111; --ink2:#3d3d3d; --muted:#6b6b6b;
+    --line:#dedede; --grid:#ececec; --accent:#0072B2; --hl:#eaf3fa; --warm:#f3f3f3;
+    /* paper colours (Okabe-Ito), one per method as in the figures */
+    --prop:#D55E00; --goff:#000000; --jia:#0072B2; --aimm:#CC79A7; --own:#56B4E9; --gate:#E69F00; --ekf:#009E73;
+    --burn:#D55E00; --false:#b3261e;
+    --serif:"STIX Two Text","STIXGeneral","Times New Roman",Times,serif;
   }
   *{box-sizing:border-box;}
-  html{font-size:15px;}
-  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}
+  html{font-size:17px;}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.55;font-family:var(--serif);}
   a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 20px;}
-  header{padding:36px 0 22px;border-bottom:1px solid var(--line);}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px;}
+  header{padding:34px 0 20px;border-bottom:1px solid var(--line);}
   .back{font-size:.85rem;color:var(--muted);}
-  h1{font-size:1.65rem;margin:10px 0 4px;letter-spacing:-.015em;font-weight:700;}
+  h1{font-size:1.75rem;margin:8px 0 4px;font-weight:700;line-height:1.25;}
   .paper{font-size:.95rem;color:var(--ink2);margin:0;}
-  .paper .st{display:inline-block;font-size:.72rem;font-weight:600;padding:0 8px;border:1px solid var(--line);
+  .st{display:inline-block;font-size:.78rem;padding:0 8px;border:1px solid var(--line);
     border-radius:999px;color:var(--muted);margin-left:6px;vertical-align:1px;white-space:nowrap;}
-  .lead{margin:14px 0 0;max-width:820px;}
-  section{padding:30px 0;border-bottom:1px solid var(--line);}
+  .lead{margin:12px 0 0;max-width:880px;}
+  section{padding:26px 0;border-bottom:1px solid var(--line);}
   section:last-of-type{border-bottom:none;}
-  h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin:0 0 14px;}
-  p{margin:0 0 12px;}
-  .muted{color:var(--muted);} .small{font-size:.85rem;}
+  h2{font-size:1.15rem;font-weight:600;margin:0 0 6px;}
+  p{margin:0 0 10px;}
+  .muted{color:var(--muted);} .small{font-size:.9rem;}
 
-  /* architecture */
-  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface);}
-  .seg button{border:0;background:transparent;color:var(--ink2);font:inherit;font-size:.86rem;padding:6px 12px;cursor:pointer;}
-  .seg button+button{border-left:1px solid var(--line);}
-  .seg button.on{background:var(--accent);color:#fff;font-weight:600;}
-  .seg button:disabled{opacity:.35;cursor:not-allowed;}
-  .archwrap{overflow-x:auto;}
-  .arch{width:100%;min-width:640px;height:auto;display:block;margin:14px 0 6px;}
-  .arch text{font-family:inherit;fill:var(--ink);}
-  .arch .box{fill:var(--surface);stroke:var(--line);stroke-width:1.2;}
-  .arch .grp{fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:4 3;}
-  .arch .lbl{font-size:12.5px;font-weight:600;} .arch .sub{font-size:11px;fill:var(--muted);}
-  .arch .ar{stroke:var(--ink2);stroke-width:1.4;fill:none;}
-  .arch .drive{stroke:var(--prop);stroke-width:2.2;fill:none;}
-  .arch .drivebox{stroke:var(--prop);stroke-width:2;}
-  .arch .loop{stroke:var(--loop);stroke-width:2.2;fill:none;}
-  .arch.mode-ref .only-own{opacity:.13;}
-  .arch.mode-own .only-ref{opacity:.13;}
-  .arch.mode-ref .loop{stroke-dasharray:5 4;}
-  .explain{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;}
-  .explain div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:.92rem;}
-  .explain div.on{border-color:var(--accent);background:var(--hl);}
-  .explain b{display:block;margin-bottom:3px;}
-
-  /* explorer controls */
-  .controls{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;margin-bottom:12px;}
+  /* controls */
+  .controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:12px 0 10px;}
   .ctl{display:flex;align-items:center;gap:8px;}
-  .ctl>label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-  .btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.86rem;
-    padding:5px 11px;border-radius:8px;cursor:pointer;}
+  .ctl>label{font-size:.88rem;color:var(--muted);font-style:italic;}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fff;}
+  .seg button{border:0;background:transparent;color:var(--ink2);font:inherit;font-size:.9rem;padding:4px 11px;cursor:pointer;}
+  .seg button+button{border-left:1px solid var(--line);}
+  .seg button.on{background:var(--ink);color:#fff;}
+  .seg button:disabled{opacity:.35;cursor:not-allowed;}
+  .btn{border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-size:.9rem;
+    padding:3px 10px;border-radius:6px;cursor:pointer;}
   .btn:hover{border-color:var(--muted);}
-  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;min-width:78px;}
-  #runNum{font-variant-numeric:tabular-nums;min-width:62px;text-align:center;font-size:.9rem;}
-  .timebar{display:flex;align-items:center;gap:10px;margin:2px 0 8px;}
-  .timebar input[type=range]{flex:1;accent-color:var(--accent);}
-  .timebar .tlabel{font-variant-numeric:tabular-nums;font-size:.86rem;color:var(--ink2);min-width:150px;text-align:right;}
-  .chips{display:flex;flex-wrap:wrap;gap:6px 8px;margin:4px 0 6px;}
-  .chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);color:var(--ink);
-    font:inherit;font-size:.82rem;padding:3px 10px 3px 8px;border-radius:999px;cursor:pointer;}
-  .chip svg{flex:0 0 auto;}
+  .btn.primary{background:var(--ink);border-color:var(--ink);color:#fff;min-width:80px;}
+  #runNum{font-variant-numeric:tabular-nums;min-width:58px;text-align:center;font-size:.92rem;}
+  .timebar{display:flex;align-items:center;gap:10px;margin:0 0 6px;}
+  .timebar input[type=range]{flex:1;accent-color:var(--ink);}
+  .timebar .tlabel{font-variant-numeric:tabular-nums;font-size:.92rem;color:var(--ink2);min-width:170px;text-align:right;}
+  .chips{display:flex;flex-wrap:wrap;gap:4px 8px;margin:2px 0 4px;}
+  .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;color:var(--ink);
+    font:inherit;font-size:.86rem;padding:1px 10px 1px 7px;border-radius:999px;cursor:pointer;}
   .chip.off{opacity:.38;} .chip.off span{text-decoration:line-through;}
   .chip:disabled{opacity:.25;cursor:not-allowed;}
-  .layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:16px;align-items:start;}
-  #plot{width:100%;height:760px;}
-  .side{position:sticky;top:12px;display:flex;flex-direction:column;gap:12px;}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:.86rem;}
-  .panel h3{margin:0 0 8px;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;}
-  .kv{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-top:1px solid var(--line);}
+
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start;}
+  #plot{width:100%;height:780px;}
+  .side{display:flex;flex-direction:column;gap:12px;}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:.9rem;}
+  .panel h3{margin:0 0 6px;font-size:.92rem;font-weight:600;}
+  .orbit{background:#fff;}
+  .orbit svg{width:100%;height:auto;display:block;}
+  .orbit svg text{font-family:var(--serif);}
+  .cbar{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--ink2);margin-top:4px;}
+  .cbar .sw{display:flex;border:1px solid #333;}
+  .cbar .sw span{width:22px;height:9px;display:block;}
+  .kv{display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-top:1px solid var(--line);}
   .kv:first-of-type{border-top:none;}
   .kv .k{display:flex;align-items:center;gap:7px;color:var(--ink2);}
-  .kv .v{font-variant-numeric:tabular-nums;text-align:right;color:var(--ink);}
-  .dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px;}
-  .tag{font-size:.72rem;padding:0 6px;border-radius:5px;border:1px solid var(--line);margin-left:4px;color:var(--ink2);}
-  .tag.fa{border-color:var(--loop);color:var(--loop);}
-  .note{font-size:.8rem;color:var(--muted);margin-top:8px;}
+  .kv .v{font-variant-numeric:tabular-nums;text-align:right;}
+  .dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px;display:inline-block;}
+  .tag{font-size:.75rem;padding:0 5px;border-radius:4px;border:1px solid var(--false);margin-left:4px;color:var(--false);}
+  .note{font-size:.82rem;color:var(--muted);margin-top:6px;}
 
   /* table */
-  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;}
-  table{border-collapse:collapse;width:100%;font-size:.84rem;font-variant-numeric:tabular-nums;}
-  th,td{padding:6px 9px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--line);}
-  thead th{font-weight:600;color:var(--ink2);background:var(--card);font-size:.78rem;}
-  tbody th{text-align:left;font-weight:500;}
-  tbody tr:last-child td,tbody tr:last-child th{border-bottom:none;}
-  td.cur,th.cur{background:var(--hl);font-weight:600;}
-  tr.sep th{background:var(--warm);font-size:.75rem;color:var(--muted);text-align:left;font-weight:600;}
-  .row-prop th{font-weight:700;}
+  .tablewrap{overflow-x:auto;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);margin-top:8px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numeric:tabular-nums;}
+  th,td{padding:4px 8px;text-align:center;white-space:nowrap;}
+  thead tr:last-child th{border-bottom:1px solid var(--ink);}
+  thead th{font-weight:400;}
+  tbody th{text-align:left;font-weight:400;}
+  td.cur,th.cur{background:var(--hl);}
+  tr.sep th{font-style:italic;color:var(--ink2);border-top:1px solid var(--line);}
+  .row-prop th,.row-prop td{font-weight:600;}
 
-  /* mapping */
-  .mapgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:center;}
-  #mapplot{width:100%;height:300px;}
-  .eq{font-family:"STIX Two Math","Cambria Math","Times New Roman",serif;font-size:1.02rem;background:var(--card);
-    border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:0 0 10px;line-height:1.9;}
-  .cres{font-size:.9rem;}
-  footer{padding:26px 0 48px;color:var(--muted);font-size:.82rem;}
+  figure{margin:10px 0 0;}
+  figure img{width:100%;height:auto;display:block;}
+  figcaption{font-size:.88rem;color:var(--ink2);margin-top:6px;}
+  footer{padding:22px 0 44px;color:var(--muted);font-size:.85rem;}
 
-  @media (max-width:860px){
+  @media (max-width:900px){
     .layout{grid-template-columns:1fr;}
-    .side{position:static;}
-    .explain,.mapgrid{grid-template-columns:1fr;}
-    #plot{height:700px;}
+    .side{display:grid;grid-template-columns:1fr 1fr;}
+    #plot{height:720px;}
   }
-  @media (max-width:520px){
+  @media (max-width:560px){
     .wrap{padding:0 16px;}
-    h1{font-size:1.35rem;}
+    h1{font-size:1.4rem;}
+    .side{grid-template-columns:1fr;}
     .timebar .tlabel{min-width:0;}
   }
 </style>
@@ -143,134 +115,44 @@
 <header>
   <div class="wrap">
     <a class="back" href="../index.html#publications">← Euiseok Han</a>
-    <h1>RD-IMM: Reference-Driven IMM for Satellite Maneuver Detection</h1>
-    <p class="paper">E. Han, S. Choi, S.-H. Kong, <em>Reference-Filter-Driven Transition Probabilities for IMM-Based Satellite Maneuver Detection</em><span class="st">Manuscript in preparation</span></p>
-    <!-- arXiv 링크 나오면 위 status를 "Preprint"로 바꾸고 여기에: <p class="paper"><a href="https://arxiv.org/abs/XXXX.XXXXX">arXiv:XXXX.XXXXX ↗</a></p> -->
+    <h1>RD-IMM: Reference-Filter-Driven Transition Probabilities for IMM-Based Satellite Maneuver Detection</h1>
+    <p class="paper">Euiseok Han, Sangheon Choi, Seung-Hyun Kong<span class="st">Manuscript in preparation</span></p>
+    <!-- arXiv 링크 나오면 위 status를 바꾸고 여기에: <p class="paper"><a href="https://arxiv.org/abs/XXXX.XXXXX">arXiv:XXXX.XXXXX ↗</a></p> -->
     <p class="lead">
-      An interacting multiple model (IMM) filter tracks a satellite with a coast model and a maneuver model, and switches
-      between them through a transition probability matrix (TPM). Adaptive-TPM methods update the TPM from statistics
-      computed inside the IMM, but those statistics already depend on the TPM through the mixing step.
-      RD-IMM drives the coast-to-maneuver probability <i>p</i><sub>CM</sub> from the normalized innovation squared (NIS)
-      of a reference coast filter that is never mixed with the IMM.
+      The interacting multiple model (IMM) filter tracks a satellite with a coast model and a maneuver model and mixes them
+      through a transition probability matrix (TPM). Adaptive-TPM methods update the TPM from statistics computed inside the IMM,
+      which already depend on the TPM through the mixing step. RD-IMM drives the coast-to-maneuver probability <i>p</i><sub>CM</sub>
+      from the normalized innovation squared (NIS) of a reference coast filter that is not mixed with the IMM.
     </p>
   </div>
 </header>
 
 <main>
 
-<section id="idea">
-  <div class="wrap">
-    <h2>Where the drive comes from</h2>
-    <div class="seg" role="group" aria-label="Source of the TPM drive">
-      <button id="archRef" class="on">Reference filter (RD-IMM)</button>
-      <button id="archOwn">Coast sub-filter inside the IMM</button>
-    </div>
-    <div class="archwrap">
-    <svg id="arch" class="arch mode-ref" viewBox="0 0 940 300" role="img"
-         aria-label="Block diagram of RD-IMM: a reference coast filter outside the IMM drives the transition probability matrix">
-      <defs>
-        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="var(--ink2)"/></marker>
-        <marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="var(--prop)"/></marker>
-        <marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="var(--loop)"/></marker>
-      </defs>
-      <!-- measurements -->
-      <rect class="box" x="10" y="118" width="110" height="56" rx="8"/>
-      <text class="lbl" x="65" y="142" text-anchor="middle">Angle</text>
-      <text class="lbl" x="65" y="158" text-anchor="middle">measurements</text>
-      <text class="sub" x="65" y="190" text-anchor="middle">z<tspan baseline-shift="sub" font-size="8">k</tspan>, 2–4 sensors</text>
-      <!-- reference row -->
-      <g class="only-ref">
-        <rect class="box drivebox" x="170" y="20" width="150" height="56" rx="8"/>
-        <text class="lbl" x="245" y="44" text-anchor="middle">Reference CKF</text>
-        <text class="sub" x="245" y="61" text-anchor="middle">coast model, never mixed</text>
-        <path class="drive" d="M120,132 C145,132 140,48 168,48" marker-end="url(#ahb)"/>
-        <path class="drive" d="M320,48 L368,48" marker-end="url(#ahb)"/>
-        <text class="sub" x="344" y="40" text-anchor="middle">Ψ<tspan baseline-shift="super" font-size="8">ref</tspan></text>
-      </g>
-      <rect class="box" x="370" y="20" width="150" height="56" rx="8"/>
-      <text class="lbl" x="445" y="44" text-anchor="middle">χ² surprisal</text>
-      <text class="sub" x="445" y="61" text-anchor="middle">s = −log₁₀[1 − F(Ψ)]</text>
-      <path class="ar" d="M520,48 L568,48" marker-end="url(#ah)"/>
-      <rect class="box" x="570" y="20" width="150" height="56" rx="8"/>
-      <text class="lbl" x="645" y="44" text-anchor="middle">Fading maximum</text>
-      <text class="sub" x="645" y="61" text-anchor="middle">α = max(ρα, s/c)</text>
-      <path class="ar" d="M720,48 L768,48" marker-end="url(#ah)"/>
-      <rect class="box" x="770" y="20" width="150" height="56" rx="8"/>
-      <text class="lbl" x="845" y="44" text-anchor="middle">Logistic map</text>
-      <text class="sub" x="845" y="61" text-anchor="middle">p<tspan baseline-shift="sub" font-size="8">CM</tspan>(α) ∈ [0.005, 0.60]</text>
-      <!-- TPM down into IMM -->
-      <path class="ar" d="M845,76 L845,104 L250,104 L250,140" marker-end="url(#ah)"/>
-      <text class="sub" x="560" y="98" text-anchor="middle">TPM Π<tspan baseline-shift="sub" font-size="8">k</tspan></text>
-      <!-- IMM group -->
-      <rect class="grp" x="150" y="120" width="780" height="168" rx="12"/>
-      <text class="sub" x="164" y="281">interacting multiple model (IMM)</text>
-      <path class="ar" d="M120,152 L168,160" marker-end="url(#ah)"/>
-      <rect class="box" x="170" y="142" width="160" height="56" rx="8"/>
-      <text class="lbl" x="250" y="166" text-anchor="middle">Interaction</text>
-      <text class="sub" x="250" y="183" text-anchor="middle">mixing with Π<tspan baseline-shift="sub" font-size="8">k</tspan></text>
-      <path class="ar" d="M330,160 L378,150" marker-end="url(#ah)"/>
-      <path class="ar" d="M330,182 L378,222" marker-end="url(#ah)"/>
-      <rect class="box" x="380" y="130" width="150" height="40" rx="8"/>
-      <text class="lbl" x="455" y="155" text-anchor="middle">coast CKF</text>
-      <rect class="box" x="380" y="204" width="150" height="40" rx="8"/>
-      <text class="lbl" x="455" y="229" text-anchor="middle">maneuver CKF</text>
-      <path class="ar" d="M530,150 L578,168" marker-end="url(#ah)"/>
-      <path class="ar" d="M530,224 L578,190" marker-end="url(#ah)"/>
-      <rect class="box" x="580" y="150" width="140" height="56" rx="8"/>
-      <text class="lbl" x="650" y="174" text-anchor="middle">Mode update</text>
-      <text class="sub" x="650" y="191" text-anchor="middle">μ<tspan baseline-shift="super" font-size="8">j</tspan> ∝ Λ<tspan baseline-shift="super" font-size="8">j</tspan> c̄<tspan baseline-shift="sub" font-size="8">j</tspan></text>
-      <path class="ar" d="M720,178 L768,178" marker-end="url(#ah)"/>
-      <rect class="box" x="770" y="150" width="150" height="56" rx="8"/>
-      <text class="lbl" x="845" y="174" text-anchor="middle">Combination</text>
-      <text class="sub" x="845" y="191" text-anchor="middle">x̂<tspan baseline-shift="sub" font-size="8">k</tspan>, P<tspan baseline-shift="sub" font-size="8">M</tspan> = μ<tspan baseline-shift="super" font-size="8">M</tspan></text>
-      <text class="sub" x="845" y="232" text-anchor="middle">declare if P<tspan baseline-shift="sub" font-size="8">M</tspan> &gt; 0.5</text>
-      <!-- internal loop -->
-      <g class="only-own">
-        <path class="loop" d="M455,130 C455,96 400,92 400,78" marker-end="url(#ahr)"/>
-        <text x="392" y="93" font-size="11" style="fill:var(--loop)" text-anchor="end">closed loop: Ψ<tspan baseline-shift="super" font-size="8">C</tspan> depends on Π<tspan baseline-shift="sub" font-size="8">k−1</tspan></text>
-      </g>
-    </svg>
-    </div>
-    <div class="explain">
-      <div id="exRef" class="on"><b>Reference filter (RD-IMM)</b>
-        The reference CKF receives the same measurements but neither Π<sub>k</sub> nor the mode probabilities enter its recursion,
-        so its NIS does not depend on the TPM. After a burn it diverges and its surprisal rises; its covariance is reset when
-        Ψ<sup>ref</sup> &gt; 30, and the surprisal returns to its coast level.</div>
-      <div id="exOwn"><b>Coast sub-filter inside the IMM (internal-NIS drive)</b>
-        Same map, but the NIS is taken from the IMM's coast sub-filter. The mixing step pulls that filter toward the
-        maneuver estimate, which shrinks its innovation after a burn (desensitization). Driving the TPM from the mode
-        probability instead can hold P<sub>M</sub> above 0.5 without a maneuver (stuck-high, AIMM below).</div>
-    </div>
-  </div>
-</section>
-
 <section id="explorer">
   <div class="wrap">
-    <h2>Monte Carlo runs from the paper</h2>
+    <h2>Monte Carlo runs</h2>
     <p class="small muted">
-      GEO target tracked by four space-based optical sensors (azimuth and elevation every 60 s). Truth includes J2–J6, lunisolar
-      third body and solar radiation pressure; all filters propagate J2 only. A single impulse is applied at
-      <i>t</i><sub>b</sub> = 120 min. The first 30 min are warm-up and excluded from every metric.
+      A geostationary target is tracked by four space-based optical sensors (azimuth and elevation every 60 s). The truth includes
+      J<sub>2</sub>–J<sub>6</sub>, lunisolar third-body and solar radiation pressure accelerations, whereas all filters propagate J<sub>2</sub> only.
+      A single impulse is applied at <i>t</i><sub>b</sub> = 120 min, and the first 30 min are excluded as warm-up.
     </p>
 
     <div class="controls">
-      <div class="ctl"><label>Burn</label>
+      <div class="ctl"><label>burn</label>
         <div class="seg" id="dirSeg">
-          <button data-d="N">None</button><button data-d="T" class="on">In-track</button><button data-d="Z">Out-of-plane</button>
+          <button data-d="N">none</button><button data-d="T" class="on">in-track</button><button data-d="Z">out-of-plane</button>
         </div></div>
       <div class="ctl"><label>Δv</label>
         <div class="seg" id="dvSeg">
           <button data-v="0.5">0.5</button><button data-v="1" class="on">1</button><button data-v="3">3</button><button data-v="10">10 m/s</button>
         </div></div>
-      <div class="ctl"><label>View</label>
+      <div class="ctl"><label>view</label>
         <div class="seg" id="modeSeg">
-          <button data-m="run" class="on">One run</button><button data-m="all">All 50 runs</button>
+          <button data-m="run" class="on">one run</button><button data-m="all">all 50 runs</button>
         </div></div>
       <div class="ctl" id="runCtl"><button class="btn" id="runPrev" aria-label="Previous run">‹</button>
-        <span id="runNum">Run 6</span><button class="btn" id="runNext" aria-label="Next run">›</button></div>
+        <span id="runNum">run 6</span><button class="btn" id="runNext" aria-label="Next run">›</button></div>
     </div>
 
     <div class="timebar">
@@ -278,15 +160,19 @@
       <input type="range" id="tslider" min="0" max="400" value="400" aria-label="Time [min]">
       <span class="tlabel" id="tlabel">t = 400 min</span>
     </div>
-
     <div class="chips" id="chips"></div>
 
     <div class="layout">
       <div id="plot"></div>
       <aside class="side">
-        <div class="panel" id="nowPanel"><h3 id="nowTitle">At t</h3><div id="nowBody"></div></div>
-        <div class="panel" id="evPanel"><h3 id="evTitle">This run</h3><div id="evBody"></div>
-          <div class="note" id="evNote"></div></div>
+        <div class="panel orbit">
+          <svg id="orbit" viewBox="-50 -37 100 72" role="img" aria-label="Target orbit, sensors and lines of sight at the selected time"></svg>
+          <div class="cbar"><span>sensors observing, <i>m</i><sub>k</sub></span>
+            <span class="sw"><span style="background:#E3E3E3"></span><span style="background:#FBE5D6"></span><span style="background:#F4B183"></span><span style="background:#E0702A"></span><span style="background:#8C2D04"></span></span>
+            <span>0–4</span></div>
+        </div>
+        <div class="panel"><h3 id="nowTitle">At t</h3><div id="nowBody"></div></div>
+        <div class="panel"><h3 id="evTitle">This run</h3><div id="evBody"></div><div class="note" id="evNote"></div></div>
       </aside>
     </div>
   </div>
@@ -294,7 +180,7 @@
 
 <section id="results">
   <div class="wrap">
-    <h2>Detection and tracking results (Table 1, 50 runs per case)</h2>
+    <h2>Table 1. Detection and tracking results (50 Monte Carlo runs per case)</h2>
     <p class="small muted">Detection probability P<sub>d</sub> / median latency [min]. The highlighted column is the case selected above.</p>
     <div class="tablewrap"><table id="tab1"></table></div>
     <p class="note">* Declared before t<sub>b</sub> in more than half of the runs. –: no declaration (EKF) or not evaluated (internal-NIS drive).
@@ -302,24 +188,16 @@
   </div>
 </section>
 
-<section id="mapping">
+<section id="structure">
   <div class="wrap">
-    <h2>Choosing the mapping constant c</h2>
-    <div class="mapgrid">
-      <div id="mapplot"></div>
-      <div>
-        <div class="eq">
-          α<sub>k</sub> = max(ρ α<sub>k−1</sub>, s<sub>k</sub>/c),&nbsp; ρ = 0.7<br>
-          p<sub>CM,k</sub> = p<sub>lo</sub> + (p<sub>hi</sub> − p<sub>lo</sub>) / (1 + e<sup>−γ(α<sub>k</sub>−1)</sup>)<br>
-          c = log₁₀(N / P<sub>FA</sub>) = log₁₀(371 / 0.05) = 3.9 → 4
-        </div>
-        <p class="small">During coast, Pr{s<sub>k</sub> ≥ c} = 10<sup>−c</sup>, so by the union bound c sets how often α<sub>k</sub>
-          reaches 1 over an arc of N measurement times without a maneuver.</p>
-        <div class="ctl" style="margin:6px 0 10px"><label>c</label>
-          <div class="seg" id="cSeg"><button data-c="3">3</button><button data-c="4" class="on">4</button><button data-c="5">5</button></div></div>
-        <p class="cres" id="cres"></p>
-      </div>
-    </div>
+    <h2>Figure 1. Structure of the reference-driven IMM (RD-IMM)</h2>
+    <figure>
+      <img src="fig_arch.png" alt="RD-IMM block diagram: angle measurements feed a reference CKF that is never mixed; its NIS passes through the chi-square surprisal, a fading maximum and a logistic map to set the TPM of the IMM. The internal closed loop is removed.">
+      <figcaption>
+        The reference filter receives the same measurements as the IMM, but neither the TPM nor the mode probabilities enter its recursion.
+        In the <i>internal-NIS drive</i> variant, the same map takes the NIS of the IMM's coast sub-filter instead, which closes the loop through the mixing step.
+      </figcaption>
+    </figure>
   </div>
 </section>
 
@@ -328,28 +206,28 @@
 <footer>
   <div class="wrap">
     Data: the 50 Monte Carlo runs per case behind Table 1 and Figs. 3–6 of the paper, stored at 8-bit resolution for this page
-    (declaration times and the table use full-precision results). RD-IMM parameters: p<sub>lo</sub> = 0.005, p<sub>hi</sub> = 0.60,
-    γ = 8, p<sub>MC</sub> = 0.10, ρ = 0.7, s<sub>max</sub> = 30, c = 4. Limitation: measurements every minute correspond to dedicated tracking of a
-    high-interest target; sparse observations and multiple or finite burns are left for future work.
+    (declaration times and the table use full-precision results). The orbit view uses the scenario geometry of Fig. 2.
+    RD-IMM parameters: p<sub>lo</sub> = 0.005, p<sub>hi</sub> = 0.60, γ = 8, p<sub>MC</sub> = 0.10, ρ = 0.7, s<sub>max</sub> = 30, c = 4.
   </div>
 </footer>
 
 <script>
 (function(){
   'use strict';
-  var D = window.RDIMM_DATA, W = D.W;
+  var D = window.RDIMM_DATA, G = window.RDIMM_GEOM, W = D.W;
   var METHODS = {
-    prop:{name:'RD-IMM (proposed)', short:'RD-IMM', v:'--prop', dash:'solid', w:2.4},
+    prop:{name:'RD-IMM (proposed)', short:'RD-IMM', v:'--prop', dash:'solid', w:2.2},
     own:{name:'internal-NIS drive', short:'internal-NIS', v:'--own', dash:'solid', w:1.5},
-    goff:{name:'NIS test', short:'NIS test', v:'--goff', dash:'dot', w:1.8},
-    jia:{name:'IMM-CKF (fixed TPM)', short:'IMM-CKF', v:'--jia', dash:'dash', w:1.5},
-    aimm:{name:'AIMM (adaptive TPM)', short:'AIMM', v:'--aimm', dash:'solid', w:1.3},
-    nisgate:{name:'binary NIS gate', short:'binary gate', v:'--gate', dash:'dashdot', w:1.4},
-    ekf:{name:'EKF', short:'EKF', v:'--ekf', dash:'longdash', w:1.4}
+    goff:{name:'NIS test', short:'NIS test', v:'--goff', dash:'dot', w:1.6},
+    jia:{name:'IMM-CKF', short:'IMM-CKF', v:'--jia', dash:'dash', w:1.4},
+    aimm:{name:'AIMM', short:'AIMM', v:'--aimm', dash:'solid', w:1.3},
+    nisgate:{name:'binary NIS gate', short:'binary gate', v:'--gate', dash:'dash', w:1.4},
+    ekf:{name:'EKF', short:'EKF', v:'--ekf', dash:'dashdot', w:1.4}
   };
   var ORDER = ['prop','own','goff','jia','aimm','nisgate','ekf'];
   var visible = {prop:true, own:true, goff:true, jia:true, aimm:false, nisgate:false, ekf:true};
-  var S = {dir:'T', dv:'1', mode:'run', run:5, t:400, playing:false, drive:'ref'};
+  var S = {dir:'T', dv:'1', mode:'run', run:5, t:400, playing:false};
+  var FONT = getComputedStyle(document.documentElement).getPropertyValue('--serif').trim();
 
   function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
   function col(m){ return css(METHODS[m].v); }
@@ -381,7 +259,7 @@
     for (var k = 0; k < N; k++) out[k] = f(u[off + k]);
     return out;
   }
-  function agg(key){ var a = C().agg[key]; return a || null; }
+  function agg(key){ return C().agg[key] || null; }
 
   // ---- Table 1 (as printed in the paper) ----
   var DV = ['0.5','1','3','10'];
@@ -394,41 +272,36 @@
     own:{fa:'0.04', coast:'0.96', T:['–','0.04 / 40','–','–'], Z:['–','0.04 / 40','–','–'], post:'0.98'},
     nisgate:{fa:'0.04', coast:'0.94', T:['0.06 / 54','0.60 / 108','1.00 / 14','1.00 / 4'], Z:['0.18 / 103','1.00 / 45','1.00 / 12','1.00 / 4'], post:'0.98'}
   };
-  var TROWS = ['ekf','jia','aimm','goff','prop'], TVAR = ['own','nisgate'];
+  var TNAME = {ekf:'EKF', jia:'IMM-CKF', aimm:'AIMM', goff:'NIS test', prop:'RD-IMM (proposed)', own:'Internal-NIS drive', nisgate:'Binary NIS gate'};
   function buildTable(){
     var cur = S.dir === 'N' ? 'N' : S.dir + DV.indexOf(S.dv);
     var h = '<thead><tr><th rowspan="2" style="text-align:left">Filter</th><th colspan="2">maneuver-free</th>' +
-      '<th colspan="4">in-track P<sub>d</sub> / latency</th><th colspan="4">out-of-plane P<sub>d</sub> / latency</th><th rowspan="2">post-burn<br>RMSE [km]</th></tr><tr>' +
+      '<th colspan="4">in-track P<sub>d</sub> / latency [min]</th><th colspan="4">out-of-plane P<sub>d</sub> / latency [min]</th><th>post-burn RMSE [km]</th></tr><tr>' +
       '<th class="' + (cur === 'N' ? 'cur' : '') + '">false decl.</th><th>coast RMSE [km]</th>';
     ['T','Z'].forEach(function(d){ DV.forEach(function(v, i){ h += '<th class="' + (cur === d + i ? 'cur' : '') + '">' + v + ' m/s</th>'; }); });
-    h += '</tr></thead><tbody>';
+    h += '<th>in-track 1 m/s</th></tr></thead><tbody>';
     function row(m){
-      var r = T1[m], s = '<tr class="row-' + m + '"><th><span class="dot" style="display:inline-block;margin-right:7px;background:' + col(m) + '"></span>' + METHODS[m].name.replace(' (proposed)', ' <span class="tag">proposed</span>') + '</th>';
+      var r = T1[m], s = '<tr class="row-' + m + '"><th>' + TNAME[m] + '</th>';
       s += '<td class="' + (cur === 'N' ? 'cur' : '') + '">' + r.fa + '</td><td>' + r.coast + '</td>';
       ['T','Z'].forEach(function(d){ r[d].forEach(function(x, i){ s += '<td class="' + (cur === d + i ? 'cur' : '') + '">' + x + '</td>'; }); });
       return s + '<td>' + r.post + '</td></tr>';
     }
-    TROWS.forEach(function(m){ h += row(m); });
+    ['ekf','jia','aimm','goff','prop'].forEach(function(m){ h += row(m); });
     h += '<tr class="sep"><th colspan="12">Variants of RD-IMM</th></tr>';
-    TVAR.forEach(function(m){ h += row(m); });
+    ['own','nisgate'].forEach(function(m){ h += row(m); });
     document.getElementById('tab1').innerHTML = h + '</tbody>';
   }
 
   // ---- chips (legend + toggles) ----
   function dashSvg(m){
-    var d = {solid:'', dot:'2 3', dash:'6 3', dashdot:'6 3 2 3', longdash:'9 3'}[METHODS[m].dash];
-    return '<svg width="22" height="8" aria-hidden="true"><line x1="1" y1="4" x2="21" y2="4" stroke="' + col(m) +
-      '" stroke-width="' + Math.min(3, METHODS[m].w + .4) + '" stroke-dasharray="' + d + '" stroke-linecap="round"/></svg>';
-  }
-  function availableIn(m){
-    var c = C();
-    if (m === 'own') return c.own;
-    return true;
+    var d = {solid:'', dot:'1.5 2.5', dash:'6 3', dashdot:'6 3 1.5 3'}[METHODS[m].dash];
+    return '<svg width="24" height="8" aria-hidden="true"><line x1="1" y1="4" x2="23" y2="4" stroke="' + col(m) +
+      '" stroke-width="' + Math.min(2.6, METHODS[m].w + .3) + '" stroke-dasharray="' + d + '" stroke-linecap="round"/></svg>';
   }
   function buildChips(){
-    var h = '';
+    var h = '', has = C().own;
     ORDER.forEach(function(m){
-      var ok = availableIn(m);
+      var ok = m !== 'own' || has;
       h += '<button class="chip' + (visible[m] ? '' : ' off') + '" data-m="' + m + '"' + (ok ? '' : ' disabled title="Evaluated only for the maneuver-free and 1 m/s cases"') +
         ' aria-pressed="' + visible[m] + '">' + dashSvg(m) + '<span>' + METHODS[m].name + '</span></button>';
     });
@@ -439,34 +312,28 @@
   }
 
   // ---- plot ----
-  var plotEl = document.getElementById('plot'), plotReady = false;
+  var plotEl = document.getElementById('plot');
   var DOM = [[0.79, 1], [0.555, 0.745], [0.29, 0.51], [0, 0.245]];
   function mkTrace(m, x, y, ax, opts){
-    opts = opts || {};
     return Object.assign({
       type:'scatter', mode:'lines', x:x, y:y, xaxis:'x', yaxis:ax, name:METHODS[m].short,
       line:{color:col(m), width:METHODS[m].w, dash:METHODS[m].dash}, hovertemplate:'%{y:.3~g}', showlegend:false
-    }, opts);
+    }, opts || {});
   }
   function upto(arr){ return arr ? arr.slice(0, S.t + 1) : []; }
   function xs(){ var a = []; for (var k = 0; k <= S.t; k++) a.push(k); return a; }
 
   function traces(){
     var c = C(), x = xs(), tr = [], run = S.mode === 'run', has = c.own;
-    // y1: surprisal
     var sr = run ? series('s_ref', 's') : agg('s_ref');
-    if (visible.prop) tr.push(mkTrace('prop', x, upto(sr), 'y', {name:'reference filter', hovertemplate:'s ref %{y:.2f}'}));
+    if (visible.prop) tr.push(mkTrace('prop', x, upto(sr), 'y', {name:'reference filter', hovertemplate:'s<sub>k</sub> reference %{y:.2f}'}));
     if (has && visible.own){
       var so = run ? series('s_own', 's') : agg('s_own');
-      tr.push(mkTrace('own', x, upto(so), 'y', {name:'coast sub-filter', hovertemplate:'s coast sub-filter %{y:.2f}'}));
+      tr.push(mkTrace('own', x, upto(so), 'y', {name:'coast sub-filter', hovertemplate:'s<sub>k</sub> coast sub-filter %{y:.2f}'}));
     }
-    // y2: p_CM
     var pr = run ? series('pcm_ref', 'pcm') : agg('pcm_ref');
-    if (visible.prop) tr.push(mkTrace('prop', x, upto(pr), 'y2', {name:'RD-IMM', hovertemplate:'p<sub>CM</sub> %{y:.3f}'}));
-    if (has && visible.own && run){
-      tr.push(mkTrace('own', x, upto(series('pcm_own', 'pcm')), 'y2', {name:'internal-NIS', hovertemplate:'p<sub>CM</sub> %{y:.3f}'}));
-    }
-    // y3: P_M (one run) or cumulative declared fraction (all runs)
+    if (visible.prop) tr.push(mkTrace('prop', x, upto(pr), 'y2', {hovertemplate:'p<sub>CM</sub> %{y:.3f}'}));
+    if (has && visible.own && run) tr.push(mkTrace('own', x, upto(series('pcm_own', 'pcm')), 'y2', {hovertemplate:'p<sub>CM</sub> %{y:.3f}'}));
     ['prop','own','jia','aimm','nisgate','goff'].forEach(function(m){
       if (!visible[m] || (m === 'own' && !has)) return;
       if (run){
@@ -476,22 +343,20 @@
         tr.push(mkTrace(m, x, upto(agg('cum_' + m)), 'y3', {hovertemplate:'declared %{y:.2f}', line:{color:col(m), width:METHODS[m].w, dash:METHODS[m].dash, shape:'hv'}}));
       }
     });
-    // y4: position error
     ['prop','goff','jia','ekf','nisgate'].forEach(function(m){
       if (!visible[m]) return;
       var e = run ? series('err_' + m, 'e') : agg('err_' + m);
       if (e) tr.push(mkTrace(m, x, upto(e), 'y4', {hovertemplate:'%{y:.2f} km'}));
     });
-    // declaration markers (one run)
     if (run){
       ['prop','own','jia','aimm','nisgate','goff'].forEach(function(m){
-        if (!visible[m] || !c.decl[m]) return;
+        if (!visible[m] || !c.decl[m] || (m === 'own' && !has)) return;
         var pre = c.decl[m][0][S.run], post = c.decl[m][1][S.run], ks = [];
         if (pre >= 0 && pre <= S.t) ks.push(pre);
         if (post >= 0 && post <= S.t) ks.push(post);
         if (!ks.length) return;
-        tr.push({type:'scatter', mode:'markers', x:ks, y:ks.map(function(){ return 1.05; }), xaxis:'x', yaxis:'y3',
-          marker:{symbol:'triangle-down', size:10, color:col(m), line:{color:css('--surface'), width:1.5}},
+        tr.push({type:'scatter', mode:'markers', x:ks, y:ks.map(function(){ return 1.06; }), xaxis:'x', yaxis:'y3',
+          marker:{symbol:'triangle-down', size:10, color:col(m), line:{color:'#fff', width:1.2}},
           name:METHODS[m].short + ' declares', hovertemplate:'%{x} min', showlegend:false, cliponaxis:false});
       });
     }
@@ -499,11 +364,11 @@
   }
 
   function layout(){
-    var c = C(), ink = css('--ink2'), mut = css('--muted'), grid = css('--grid'), line = css('--line');
+    var c = C(), ink = css('--ink2'), mut = css('--muted'), grid = css('--grid'), line = '#bdbdbd';
     var run = S.mode === 'run';
     var ax = function(dom, title, extra){
-      return Object.assign({domain:dom, title:{text:title, font:{size:11.5, color:ink}, standoff:6}, gridcolor:grid,
-        zeroline:false, linecolor:line, tickfont:{size:10.5, color:mut}, fixedrange:true}, extra || {});
+      return Object.assign({domain:dom, title:{text:title, font:{size:13.5, color:ink}, standoff:6}, gridcolor:grid,
+        zeroline:false, linecolor:line, mirror:true, ticks:'inside', ticklen:3, tickcolor:line, tickfont:{size:12, color:ink}, fixedrange:true}, extra || {});
     };
     var smax = 6, emax = 1;
     var sr0 = run ? series('s_ref', 's') : agg('s_ref');
@@ -515,61 +380,164 @@
       if (e) for (var j = W; j < e.length; j++) if (e[j] > emax) emax = e[j];
     });
     var shapes = [
-      {type:'rect', xref:'x', yref:'paper', x0:0, x1:W, y0:0, y1:1, fillcolor:css('--warm'), opacity:.7, line:{width:0}, layer:'below'},
-      {type:'line', xref:'x', yref:'y', x0:0, x1:400, y0:4, y1:4, line:{color:mut, width:1, dash:'dot'}},
-      {type:'line', xref:'x', yref:'y3', x0:0, x1:400, y0:.5, y1:.5, line:{color:mut, width:1, dash:'dot'}}
+      {type:'rect', xref:'x', yref:'paper', x0:0, x1:W, y0:0, y1:1, fillcolor:css('--warm'), opacity:.8, line:{width:0}, layer:'below'},
+      {type:'line', xref:'x', yref:'y', x0:0, x1:400, y0:4, y1:4, line:{color:mut, width:1, dash:'dot'}}
     ];
-    if (!run) shapes.pop();
-    if (S.dir !== 'N') shapes.push({type:'line', xref:'x', yref:'paper', x0:c.kb, x1:c.kb, y0:0, y1:1.0, line:{color:css('--burn'), width:1.2, dash:'dash'}});
-    if (S.t < 400) shapes.push({type:'line', xref:'x', yref:'paper', x0:S.t, x1:S.t, y0:0, y1:1, line:{color:css('--accent'), width:1}});
+    if (run) shapes.push({type:'line', xref:'x', yref:'y3', x0:0, x1:400, y0:.5, y1:.5, line:{color:mut, width:1, dash:'dot'}});
+    if (S.dir !== 'N') shapes.push({type:'line', xref:'x', yref:'paper', x0:c.kb, x1:c.kb, y0:0, y1:1, line:{color:css('--burn'), width:1.1, dash:'dash'}});
+    if (S.t < 400) shapes.push({type:'line', xref:'x', yref:'paper', x0:S.t, x1:S.t, y0:0, y1:1, line:{color:'#444', width:1}});
     var ann = [
-      {xref:'x', yref:'y', x:398, y:4, text:'c = 4 (α = 1)', showarrow:false, xanchor:'right', yanchor:'bottom', font:{size:10, color:mut}},
-      {xref:'x', yref:'paper', x:W / 2, y:1.0, text:'warm-up', showarrow:false, yanchor:'bottom', font:{size:10, color:mut}}
+      {xref:'x', yref:'y', x:398, y:4, text:'<i>c</i> = 4 (α<sub>k</sub> = 1)', showarrow:false, xanchor:'right', yanchor:'bottom', font:{size:12, color:mut}},
+      {xref:'x', yref:'paper', x:W / 2, y:1.0, text:'warm-up', showarrow:false, yanchor:'bottom', font:{size:12, color:mut}}
     ];
-    if (run) ann.push({xref:'x', yref:'y3', x:398, y:.5, text:'declare', showarrow:false, xanchor:'right', yanchor:'bottom', font:{size:10, color:mut}});
-    if (S.dir !== 'N') ann.push({xref:'x', yref:'paper', x:c.kb, y:1.0, text:'burn t<sub>b</sub>', showarrow:false, xanchor:'left', xshift:4, yanchor:'bottom', font:{size:10.5, color:css('--burn')}});
+    if (run) ann.push({xref:'x', yref:'y3', x:398, y:.5, text:'declare', showarrow:false, xanchor:'right', yanchor:'bottom', font:{size:12, color:mut}});
+    if (S.dir !== 'N') ann.push({xref:'x', yref:'paper', x:c.kb, y:1.0, text:'burn <i>t</i><sub>b</sub>', showarrow:false, xanchor:'left', xshift:4, yanchor:'bottom', font:{size:13, color:css('--burn')}});
     return {
-      margin:{l:62, r:12, t:22, b:40}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-      font:{family:getComputedStyle(document.body).fontFamily, color:ink}, showlegend:false,
-      hovermode:'x', hoverlabel:{bgcolor:css('--surface'), bordercolor:line, font:{color:css('--ink'), size:11.5}},
+      margin:{l:66, r:12, t:24, b:44}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+      font:{family:FONT, color:ink}, showlegend:false,
+      hovermode:'x', hoverlabel:{bgcolor:'#fff', bordercolor:'#bbb', font:{family:FONT, color:'#111', size:13}},
       hoversubplots:'axis',
-      xaxis:{range:[0, 400], domain:[0, 1], anchor:'y4', title:{text:'time [min]', font:{size:11.5, color:ink}}, gridcolor:grid, zeroline:false,
-        linecolor:line, tickfont:{size:10.5, color:mut}, dtick:50, fixedrange:true, showspikes:true, spikemode:'across', spikethickness:1, spikecolor:mut, spikedash:'solid'},
-      yaxis:ax(DOM[0], (run ? '' : 'median ') + 'surprisal s<sub>k</sub>', {range:[0, smax], anchor:'x'}),
-      yaxis2:ax(DOM[1], (run ? '' : 'median ') + 'p<sub>CM,k</sub>', {range:[0, .64], anchor:'x', tickvals:[0.005, .2, .4, .6], ticktext:['0.005','0.2','0.4','0.6']}),
-      yaxis3:ax(DOM[2], run ? 'P<sub>M</sub>' : 'declared fraction', {range:[0, 1.1], anchor:'x', tickvals:[0, .5, 1]}),
+      xaxis:{range:[0, 400], domain:[0, 1], anchor:'y4', title:{text:'time [min]', font:{size:13.5, color:ink}}, gridcolor:grid, zeroline:false,
+        linecolor:line, ticks:'inside', ticklen:3, tickcolor:line, tickfont:{size:12, color:ink}, dtick:50, fixedrange:true,
+        showspikes:true, spikemode:'across', spikethickness:1, spikecolor:mut, spikedash:'solid'},
+      yaxis:ax(DOM[0], (run ? '' : 'median ') + 'surprisal <i>s</i><sub>k</sub>', {range:[0, smax], anchor:'x'}),
+      yaxis2:ax(DOM[1], (run ? '' : 'median ') + '<i>p</i><sub>CM,k</sub>', {range:[0, .64], anchor:'x', tickvals:[0.005, .2, .4, .6], ticktext:['0.005','0.2','0.4','0.6']}),
+      yaxis3:ax(DOM[2], run ? '<i>P</i><sub>M</sub>' : 'declared fraction of runs', {range:[0, 1.1], anchor:'x', tickvals:[0, .5, 1]}),
       yaxis4:ax(DOM[3], (run ? '' : 'median ') + 'position error [km]', {type:'log', range:[-1.3, Math.min(2, Math.log10(emax) + 0.15)], anchor:'x', tickvals:[.1, .3, 1, 3, 10, 30, 100], ticktext:['0.1','0.3','1','3','10','30','100']}),
       shapes:shapes, annotations:ann
     };
   }
 
+  // ---- orbit view (geometry of Fig. 2) ----
+  var NS = 'http://www.w3.org/2000/svg', svg = document.getElementById('orbit');
+  var MK = {0:'#E3E3E3', 1:'#FBE5D6', 2:'#F4B183', 3:'#E0702A', 4:'#8C2D04'}, BLUE = '#0072B2';
+  function el(tag, attrs, parent){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    (parent || svg).appendChild(e); return e;
+  }
+  function pts(arr){ return arr.map(function(p){ return p[0].toFixed(2) + ',' + (-p[1]).toFixed(2); }).join(' '); }
+  function polyRuns(P, keep){   // split a polyline where keep() is false
+    var out = [], cur = [];
+    for (var i = 0; i < P.length; i++){
+      if (keep(i)) cur.push(P[i]); else { if (cur.length > 1) out.push(cur); cur = []; }
+    }
+    if (cur.length > 1) out.push(cur);
+    return out;
+  }
+  var O = {};
+  function buildOrbit(){
+    svg.innerHTML = '';
+    var Re = G.Re;
+    // sensor orbits, far side
+    G.orb.forEach(function(o, i){
+      polyRuns(o, function(k){ return !G.orbf[i][k]; }).forEach(function(r){ el('polyline', {points:pts(r), fill:'none', stroke:BLUE, 'stroke-width':.25, opacity:.35}); });
+    });
+    // Earth and rotating graticule
+    el('circle', {cx:0, cy:0, r:Re, fill:'#EEF2F6', stroke:'#8c8c8c', 'stroke-width':.18});
+    O.grat = el('g', {});
+    // sensor orbits, near side
+    G.orb.forEach(function(o, i){
+      polyRuns(o, function(k){ return G.orbf[i][k]; }).forEach(function(r){ el('polyline', {points:pts(r), fill:'none', stroke:BLUE, 'stroke-width':.3}); });
+    });
+    // full revolution coloured by m_k
+    var Q = G.full;
+    for (var k = 0; k < Q.length - 1; ){
+      var lv = G.nfull[k], j = k;
+      while (j < Q.length - 1 && G.nfull[j] === lv) j++;
+      el('polyline', {points:pts(Q.slice(k, j + 1)), fill:'none', stroke:MK[lv], 'stroke-width':1.3, 'stroke-linecap':'butt'});
+      k = j;
+    }
+    // simulated arc, just outside the ring
+    var qo = G.tgt.map(function(p){ return [p[0] * 1.075, p[1] * 1.075]; }); O.qo = qo;
+    el('polyline', {points:pts(qo), fill:'none', stroke:'#000', 'stroke-width':.28, opacity:.25});
+    O.arc = el('polyline', {points:'', fill:'none', stroke:'#000', 'stroke-width':.3});
+    el('circle', {cx:qo[0][0], cy:-qo[0][1], r:.75, fill:'#000'});
+    el('circle', {cx:qo[400][0], cy:-qo[400][1], r:.75, fill:'#fff', stroke:'#000', 'stroke-width':.25});
+    var t0 = el('text', {x:qo[0][0] + 1.6, y:-qo[0][1] - 1.4, 'font-size':3.4, 'text-anchor':'start'}); t0.innerHTML = '<tspan font-style="italic">t</tspan> = 0';
+    var t4 = el('text', {x:qo[400][0] - 1, y:-qo[400][1] + 5, 'font-size':3.4, 'text-anchor':'start'}); t4.innerHTML = '<tspan font-style="italic">t</tspan> = 400 min';
+    // sun arrow, lines of sight, sensors, target
+    O.sun = el('g', {});
+    O.los = el('g', {});
+    O.sens = el('g', {});
+    O.burn = el('g', {});
+    O.tgt = el('circle', {r:1.05, fill:'#000', stroke:'#fff', 'stroke-width':.3});
+  }
+  function rotGrat(t){
+    var g = O.grat, Re = G.Re, e1 = G.e1, e2 = G.e2, d = G.d;
+    g.innerHTML = '';
+    var th = 7.2921159e-5 * 60 * t;          // Earth rotation in the inertial frame
+    var c = Math.cos(th), s = Math.sin(th);
+    function P(lat, lon){
+      var x = Math.cos(lat) * Math.cos(lon), y = Math.cos(lat) * Math.sin(lon), z = Math.sin(lat);
+      var X = c * x - s * y, Y = s * x + c * y;
+      return {p:[Re * (X * e1[0] + Y * e1[1] + z * e1[2]), Re * (X * e2[0] + Y * e2[1] + z * e2[2])], f:(X * d[0] + Y * d[1] + z * d[2]) >= 0};
+    }
+    var lines = [], k, a, b;
+    for (a = -60; a <= 60; a += 30){ var L = []; for (k = 0; k <= 72; k++) L.push(P(a * Math.PI / 180, k * 5 * Math.PI / 180)); lines.push(L); }
+    for (b = 0; b < 360; b += 30){ var M = []; for (k = 0; k <= 36; k++) M.push(P((k * 5 - 90) * Math.PI / 180, b * Math.PI / 180)); lines.push(M); }
+    lines.forEach(function(L){
+      polyRuns(L, function(i){ return L[i].f; }).forEach(function(r){
+        el('polyline', {points:pts(r.map(function(q){ return q.p; })), fill:'none', stroke:'#b8b8b8', 'stroke-width':.12}, g);
+      });
+    });
+  }
+  function updateOrbit(){
+    var t = S.t, qo = O.qo, c = C();
+    rotGrat(t);
+    O.arc.setAttribute('points', pts(qo.slice(0, t + 1)));
+    O.tgt.setAttribute('cx', qo[t][0]); O.tgt.setAttribute('cy', -qo[t][1]);
+    // sun direction (sampled every 10 min)
+    var u = G.sun[Math.min(G.sun.length - 1, Math.round(t / 10))], n = Math.hypot(u[0], u[1]); u = [u[0] / n, u[1] / n];
+    O.sun.innerHTML = '';
+    var r0 = G.Re * 1.25, r1 = 20;
+    el('line', {x1:u[0] * r0, y1:-u[1] * r0, x2:u[0] * r1, y2:-u[1] * r1, stroke:'#C9A227', 'stroke-width':.35}, O.sun);
+    var ang = Math.atan2(-u[1], u[0]), hx = u[0] * r1, hy = -u[1] * r1, hl = 1.6, hw = .8;
+    el('polygon', {points:[hx + Math.cos(ang) * .2, hy + Math.sin(ang) * .2, hx - Math.cos(ang) * hl - Math.sin(ang) * hw, hy - Math.sin(ang) * hl + Math.cos(ang) * hw,
+      hx - Math.cos(ang) * hl + Math.sin(ang) * hw, hy - Math.sin(ang) * hl - Math.cos(ang) * hw].join(','), fill:'#C9A227'}, O.sun);
+    var st = el('text', {x:u[0] * (r1 + 3), y:-u[1] * (r1 + 3) + 1, 'font-size':3.4, fill:'#9C7A10', 'text-anchor':'middle'}, O.sun); st.textContent = 'Sun';
+    // sensors and lines of sight
+    O.los.innerHTML = ''; O.sens.innerHTML = '';
+    for (var i = 0; i < 4; i++){
+      var p = G.sens[i][t], on = G.avail[i][t] === 1, hidden = !G.sfront[i][t] && Math.hypot(p[0], p[1]) < G.Re;
+      if (on) el('line', {x1:p[0], y1:-p[1], x2:qo[t][0], y2:-qo[t][1], stroke:'#555', 'stroke-width':.22, 'stroke-dasharray':'.5 .6', opacity:hidden ? .4 : 1}, O.los);
+      el('rect', {x:p[0] - .8, y:-p[1] - .8, width:1.6, height:1.6, fill:on ? BLUE : '#fff', stroke:BLUE, 'stroke-width':.3, opacity:hidden ? .35 : 1}, O.sens);
+      var lx = p[0] * 1.3, ly = -p[1] * 1.3;
+      var tx = el('text', {x:lx, y:ly + .9, 'font-size':3, fill:BLUE, 'text-anchor':'middle', opacity:hidden ? .35 : 1}, O.sens); tx.textContent = 'S' + (i + 1);
+    }
+    // burn
+    O.burn.innerHTML = '';
+    if (S.dir !== 'N'){
+      var b = qo[c.kb], R = 1.9, r = .8, sp = [];
+      for (var k = 0; k < 10; k++){ var a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? r : R; sp.push((b[0] + rr * Math.cos(a)).toFixed(2) + ',' + (-b[1] + rr * Math.sin(a)).toFixed(2)); }
+      el('polygon', {points:sp.join(' '), fill:t >= c.kb ? css('--burn') : '#fff', stroke:css('--burn'), 'stroke-width':.3}, O.burn);
+      var bt = el('text', {x:b[0] - 3, y:-b[1] - 3.2, 'font-size':3.4, fill:css('--burn'), 'font-weight':700, 'text-anchor':'middle'}, O.burn);
+      bt.innerHTML = 'burn (<tspan font-style="italic">t</tspan><tspan font-size="2.4" dy=".8">b</tspan><tspan dy="-.8">)</tspan>';
+    }
+  }
+
   function draw(){
-    var cfg = {displayModeBar:false, responsive:true};
-    if (!window.Plotly){ plotEl.innerHTML = '<p class="muted small">The chart library could not be loaded.</p>'; return; }
-    Plotly.react(plotEl, traces(), layout(), cfg);
-    plotReady = true;
+    if (window.Plotly) Plotly.react(plotEl, traces(), layout(), {displayModeBar:false, responsive:true});
+    else plotEl.innerHTML = '<p class="muted small">The chart library could not be loaded.</p>';
+    updateOrbit();
     side();
   }
 
   // ---- side panels ----
   function fmt(x, d){ return x == null ? '–' : (+x).toFixed(d); }
+  function kv(k, v, m){ return '<div class="kv"><span class="k">' + (m ? '<span class="dot" style="background:' + col(m) + '"></span>' : '') + '<span>' + k + '</span></span><span class="v">' + v + '</span></div>'; }
   function side(){
     var c = C(), run = S.mode === 'run', k = S.t, nb = '';
-    document.getElementById('nowTitle').textContent = 'At t = ' + k + ' min' + (run ? '' : ' (median / fraction)');
-    nb += '<div class="kv"><span class="k">sensors observing</span><span class="v">' + c.navail[k] + '</span></div>';
-    var sr = run ? series('s_ref', 's')[k] : agg('s_ref')[k];
-    var pc = run ? series('pcm_ref', 'pcm')[k] : agg('pcm_ref')[k];
-    nb += '<div class="kv"><span class="k"><span class="dot" style="background:' + col('prop') + '"></span><span>s<sub>k</sub> reference</span></span><span class="v">' + fmt(sr, 2) + '</span></div>';
-    if (c.own){
-      var so = run ? series('s_own', 's')[k] : agg('s_own')[k];
-      nb += '<div class="kv"><span class="k"><span class="dot" style="background:' + col('own') + '"></span><span>s<sub>k</sub> coast sub-filter</span></span><span class="v">' + fmt(so, 2) + '</span></div>';
-    }
-    nb += '<div class="kv"><span class="k"><span>p<sub>CM,k</sub> (RD-IMM)</span></span><span class="v">' + fmt(pc, 3) + '</span></div>';
+    document.getElementById('nowTitle').innerHTML = 'At <i>t</i> = ' + k + ' min' + (run ? '' : ' (median / fraction)');
+    nb += kv('sensors observing, <i>m</i><sub>k</sub>', c.navail[k]);
+    nb += kv('<i>s</i><sub>k</sub>, reference filter', fmt((run ? series('s_ref', 's') : agg('s_ref'))[k], 2), 'prop');
+    if (c.own) nb += kv('<i>s</i><sub>k</sub>, coast sub-filter', fmt((run ? series('s_own', 's') : agg('s_own'))[k], 2), 'own');
+    nb += kv('<i>p</i><sub>CM,k</sub> (RD-IMM)', fmt((run ? series('pcm_ref', 'pcm') : agg('pcm_ref'))[k], 3));
     if (run){
-      nb += '<div class="kv"><span class="k"><span>P<sub>M</sub> RD-IMM</span></span><span class="v">' + fmt(series('pm_prop', 'p')[k], 2) + '</span></div>';
-      nb += '<div class="kv"><span class="k">error RD-IMM / NIS test</span><span class="v">' + fmt(series('err_prop', 'e')[k], 2) + ' / ' + fmt(series('err_goff', 'e')[k], 2) + ' km</span></div>';
+      nb += kv('<i>P</i><sub>M</sub> (RD-IMM)', fmt(series('pm_prop', 'p')[k], 2));
+      nb += kv('error, RD-IMM / NIS test', fmt(series('err_prop', 'e')[k], 2) + ' / ' + fmt(series('err_goff', 'e')[k], 2) + ' km');
     } else {
-      nb += '<div class="kv"><span class="k">declared RD-IMM / NIS test</span><span class="v">' + fmt(agg('cum_prop')[k], 2) + ' / ' + fmt(agg('cum_goff')[k], 2) + '</span></div>';
+      nb += kv('declared, RD-IMM / NIS test', fmt(agg('cum_prop')[k], 2) + ' / ' + fmt(agg('cum_goff')[k], 2));
     }
     document.getElementById('nowBody').innerHTML = nb;
 
@@ -579,23 +547,19 @@
       document.getElementById('evTitle').textContent = 'Run ' + (S.run + 1) + ' of 50: first declaration';
       list.forEach(function(m){
         var pre = c.decl[m][0][S.run], post = c.decl[m][1][S.run], v;
-        if (pre >= 0) v = pre + ' min<span class="tag fa">false</span>';
+        if (pre >= 0) v = pre + ' min<span class="tag">false</span>';
         else if (post >= 0 && S.dir !== 'N') v = '+' + (post - c.kb) + ' min';
-        else if (post >= 0) v = post + ' min<span class="tag fa">false</span>';
+        else if (post >= 0) v = post + ' min<span class="tag">false</span>';
         else v = 'none';
-        eb += '<div class="kv"><span class="k"><span class="dot" style="background:' + col(m) + '"></span>' + METHODS[m].short + '</span><span class="v">' + v + '</span></div>';
+        eb += kv(METHODS[m].short, v, m);
       });
       note = S.dir === 'N' ? 'No maneuver in this case, so every declaration is false.' :
-        'Latency is measured from t<sub>b</sub>. A declaration before t<sub>b</sub> is false. NIS test declares when Ψ<sup>ref</sup> &gt; 30.';
+        'Latency from <i>t</i><sub>b</sub>; a declaration before <i>t</i><sub>b</sub> is false. The NIS test declares when Ψ<sup>ref</sup> &gt; 30.';
     } else {
-      document.getElementById('evTitle').textContent = 'Paper, Table 1';
+      document.getElementById('evTitle').textContent = 'Table 1';
       var key = S.dir === 'N' ? null : S.dir, idx = DV.indexOf(S.dv);
-      list.concat(['ekf']).forEach(function(m){
-        var v = key ? T1[m][key][idx] : T1[m].fa;
-        if (m === 'ekf' && !key) v = '–';
-        eb += '<div class="kv"><span class="k"><span class="dot" style="background:' + col(m) + '"></span>' + METHODS[m].short + '</span><span class="v">' + v + '</span></div>';
-      });
-      note = key ? 'P<sub>d</sub> / median latency [min]. * declared before t<sub>b</sub> in more than half of the runs.' : 'False-declaration rate in the maneuver-free runs.';
+      list.concat(['ekf']).forEach(function(m){ eb += kv(METHODS[m].short, key ? T1[m][key][idx] : T1[m].fa, m); });
+      note = key ? 'P<sub>d</sub> / median latency [min]. * Declared before <i>t</i><sub>b</sub> in more than half of the runs.' : 'False-declaration rate in the maneuver-free runs.';
     }
     document.getElementById('evBody').innerHTML = eb;
     document.getElementById('evNote').innerHTML = note;
@@ -603,30 +567,30 @@
 
   // ---- controls ----
   function seg(id, attr, fn){
-    var el = document.getElementById(id);
-    el.querySelectorAll('button').forEach(function(b){
+    var box = document.getElementById(id);
+    box.querySelectorAll('button').forEach(function(b){
       b.addEventListener('click', function(){
         if (b.disabled) return;
-        el.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+        box.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
         fn(b.dataset[attr]);
       });
     });
   }
-  function syncDv(){
-    document.querySelectorAll('#dvSeg button').forEach(function(b){ b.disabled = S.dir === 'N'; });
-  }
+  function syncDv(){ document.querySelectorAll('#dvSeg button').forEach(function(b){ b.disabled = S.dir === 'N'; }); }
   seg('dirSeg', 'd', function(v){ S.dir = v; syncDv(); refresh(); });
   seg('dvSeg', 'v', function(v){ S.dv = v; refresh(); });
-  seg('modeSeg', 'm', function(v){
-    S.mode = v; document.getElementById('runCtl').style.visibility = v === 'run' ? 'visible' : 'hidden'; draw();
-  });
-  function setRun(r){ S.run = (r + 50) % 50; document.getElementById('runNum').textContent = 'Run ' + (S.run + 1); draw(); }
+  seg('modeSeg', 'm', function(v){ S.mode = v; document.getElementById('runCtl').style.visibility = v === 'run' ? 'visible' : 'hidden'; draw(); });
+  function setRun(r){ S.run = (r + 50) % 50; document.getElementById('runNum').textContent = 'run ' + (S.run + 1); draw(); }
   document.getElementById('runPrev').addEventListener('click', function(){ setRun(S.run - 1); });
   document.getElementById('runNext').addEventListener('click', function(){ setRun(S.run + 1); });
   function refresh(){ buildChips(); buildTable(); draw(); }
 
   var slider = document.getElementById('tslider'), tlabel = document.getElementById('tlabel'), playBtn = document.getElementById('play');
-  function setT(t){ S.t = Math.max(0, Math.min(400, t)); slider.value = S.t; tlabel.textContent = 't = ' + S.t + ' min' + (S.dir !== 'N' && S.t >= C().kb ? '  (t − t_b = ' + (S.t - C().kb) + ')' : ''); draw(); }
+  function setT(t){
+    S.t = Math.max(0, Math.min(400, t)); slider.value = S.t;
+    tlabel.innerHTML = '<i>t</i> = ' + S.t + ' min' + (S.dir !== 'N' && S.t >= C().kb ? ' (<i>t</i> − <i>t</i><sub>b</sub> = ' + (S.t - C().kb) + ')' : '');
+    draw();
+  }
   slider.addEventListener('input', function(){ stop(); setT(+slider.value); });
   var timer = null;
   function stop(){ S.playing = false; playBtn.textContent = '▶ Play'; if (timer){ clearInterval(timer); timer = null; } }
@@ -634,59 +598,14 @@
     if (S.playing){ stop(); return; }
     if (S.t >= 400) S.t = 0;
     S.playing = true; playBtn.textContent = '❚❚ Pause';
-    timer = setInterval(function(){ if (S.t >= 400){ stop(); return; } setT(S.t + 3); }, 40);
+    timer = setInterval(function(){ if (S.t >= 400){ stop(); return; } setT(S.t + 2); }, 40);
   });
 
-  // ---- architecture toggle ----
-  function setDrive(d){
-    S.drive = d;
-    document.getElementById('archRef').classList.toggle('on', d === 'ref');
-    document.getElementById('archOwn').classList.toggle('on', d === 'own');
-    var a = document.getElementById('arch'); a.classList.toggle('mode-ref', d === 'ref'); a.classList.toggle('mode-own', d === 'own');
-    document.getElementById('exRef').classList.toggle('on', d === 'ref');
-    document.getElementById('exOwn').classList.toggle('on', d === 'own');
-  }
-  document.getElementById('archRef').addEventListener('click', function(){ setDrive('ref'); });
-  document.getElementById('archOwn').addEventListener('click', function(){ setDrive('own'); });
-
-  // ---- mapping plot ----
-  var CRES = {
-    '3':'With c = 3, the in-track 1 m/s latency decreases from 88 to 42 min, whereas the false-declaration rate in the maneuver-free runs increases from 0.04 to 0.26.',
-    '4':'c = 4 is adopted, obtained by rounding c = 3.9 from the design rule with P<sub>FA</sub> = 0.05 and N = 371. In-track 1 m/s: P<sub>d</sub> 0.74, median latency 88 min; false-declaration rate 0.04.',
-    '5':'With c = 5, the in-track detection probability at 1 m/s decreases from 0.74 to 0.26.'
-  };
-  var cSel = '4';
-  function drawMap(){
-    if (!window.Plotly) return;
-    var ink = css('--ink2'), mut = css('--muted'), grid = css('--grid'), line = css('--line'), tr = [];
-    var cols = {'3':css('--muted'), '4':css('--prop'), '5':css('--muted')};
-    ['3','4','5'].forEach(function(c){
-      var x = [], y = [];
-      for (var s = 0; s <= 8.0001; s += 0.05){ var a = s / (+c); x.push(s); y.push(0.005 + 0.595 / (1 + Math.exp(-8 * (a - 1)))); }
-      var on = c === cSel;
-      tr.push({type:'scatter', mode:'lines', x:x, y:y, name:'c = ' + c, line:{color:on ? css('--prop') : mut, width:on ? 2.6 : 1.2, dash:on ? 'solid' : (c === '3' ? 'dot' : 'dash')},
-        hovertemplate:'c = ' + c + ': s = %{x:.2f}, p<sub>CM</sub> = %{y:.3f}<extra></extra>'});
-    });
-    var lay = {margin:{l:56, r:12, t:12, b:46}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)', showlegend:false,
-      font:{family:getComputedStyle(document.body).fontFamily, color:ink},
-      hoverlabel:{bgcolor:css('--surface'), bordercolor:line, font:{color:css('--ink'), size:11.5}},
-      xaxis:{title:{text:'surprisal s<sub>k</sub>  (coast tail probability 10<sup>−s</sup>)', font:{size:11.5}}, range:[0, 8], dtick:1, gridcolor:grid, zeroline:false, linecolor:line, tickfont:{size:10.5, color:mut}, fixedrange:true},
-      yaxis:{title:{text:'p<sub>CM</sub> after one step from α = 0', font:{size:11.5}}, range:[0, .64], gridcolor:grid, zeroline:false, linecolor:line, tickfont:{size:10.5, color:mut}, fixedrange:true, tickvals:[0.005, .2, .4, .6], ticktext:['0.005','0.2','0.4','0.6']},
-      annotations:['3','4','5'].map(function(c){ return {x:+c, y:0.3025, text:'c = ' + c, showarrow:false, xanchor:'left', xshift:6, font:{size:10.5, color:c === cSel ? css('--prop') : mut}}; })
-    };
-    Plotly.react('mapplot', tr, lay, {displayModeBar:false, responsive:true});
-    document.getElementById('cres').innerHTML = CRES[cSel];
-  }
-  seg('cSeg', 'c', function(v){ cSel = v; drawMap(); });
-
-  // re-theme on scheme change
-  var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
-  if (mq && mq.addEventListener) mq.addEventListener('change', function(){ refresh(); drawMap(); });
-
+  buildOrbit();
   syncDv();
-  refresh();
-  drawMap();
+  buildChips(); buildTable();
   setT(400);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ draw(); });
 })();
 </script>
 </body>
