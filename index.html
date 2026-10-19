@@ -119,7 +119,8 @@
   .item .left .detail{display:block;color:var(--ink);font-size:0.92rem;margin-top:4px;}
   .item .left .xlinks{display:block;font-size:0.85rem;margin-top:5px;}
   .item .left .xlinks a{margin-right:14px;}
-  .item .year{color:var(--muted);font-size:0.9rem;white-space:nowrap;text-align:right;}
+  .item .left{flex:1 1 0;min-width:0;}
+  .item .year{flex:0 0 230px;color:var(--muted);font-size:0.9rem;white-space:nowrap;text-align:right;}
 
   footer{padding:40px 0 64px;color:var(--muted);font-size:0.85rem;text-align:center;}
 
@@ -145,7 +146,7 @@
     .pub .pubtext{flex-basis:100%;order:1;}
     .pmedia{width:100%;flex-basis:auto;}
     .item{flex-direction:column;gap:4px;}
-    .item .year{text-align:left;}
+    .item .year{text-align:left;flex-basis:auto;}
   }
 </style>
 </head>
@@ -301,7 +302,7 @@
           <span>Undergraduate Researcher · Advisor: Prof. Seung-Hyun Kong</span>
           <span class="detail">Originated from a graduate Kalman filtering course project on a J2-Hamiltonian-driven IMM.
             Identified a feedback loop in adaptive-TPM IMMs that sustains false alarms or suppresses detections, and
-            proposed <a href="#publications">RD-IMM [2]</a>, which drives the IMM transitions from the NIS of a
+            proposed <a href="#publications" style="white-space:nowrap">RD-IMM [2]</a>, which drives the IMM transitions from the NIS of a
             reference coast filter outside the IMM. It detects 98% of 1 m/s north–south (out-of-plane) burns
             that a fixed-TPM IMM misses, with few false alarms.</span>
         </div>
@@ -328,7 +329,7 @@
           <strong>Control and Intelligent Systems Lab, KAIST</strong>
           <span>Undergraduate Researcher · Advisor: Prof. Heejin Ahn</span>
           <span class="detail">Reproduced Constrained Policy Optimization (ICML 2017) baselines in MuJoCo
-            from the official code (safe RL).</span>
+            (safe RL).</span>
           <span class="xlinks">
             <a href="CISLab/CISLab_slides.pdf" target="_blank" rel="noopener">Slides ↗</a></span>
         </div>
