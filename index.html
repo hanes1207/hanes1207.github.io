@@ -232,13 +232,11 @@
           <div class="venue">Submitted to IEEE International Conference on Robotics and Automation (ICRA) 2027</div>
           <p class="desc">
             We reveal that frozen open-vocabulary 2D image and 3D shape encoders fail on largely disjoint sets of
-            instances and are weakly correlated (Spearman ρ 0.08–0.23; 5.9% identical wrong labels for EVA02 + Uni3D),
-            whereas two 2D image encoders share 41.4% of their wrong labels (ρ = 0.68). SenseFuse fuses the two at the
-            mask-labeling stage of open-vocabulary 3D instance segmentation with a closed-form, label-free scene-level
-            weight that maximizes a sensitivity measure, estimated from a single scene's unlabeled proposals in 3.5 ms.
-            Across ScanNet200, Replica, and ScanNet++, it improves labeling accuracy in every setting by a median of
-            +7.1 points (up to +25.1), recovers a median 93% (67–100%) of the oracle-weight gain, and raises instance
-            AP in 21 of 22 settings.
+            instances: a 2D–3D pair shares only 5.9% of its wrong labels, whereas two 2D encoders share 41.4%.
+            SenseFuse fuses the two at the mask-labeling stage with a closed-form, label-free scene-level weight that
+            maximizes a sensitivity measure, estimated from a single scene's unlabeled proposals in 3.5 ms. Across
+            ScanNet200, Replica, and ScanNet++, it improves labeling accuracy in every setting (median +7.1 points),
+            recovers a median 93% of the oracle-weight gain, and raises instance AP in 21 of 22 settings.
           </p>
           <div class="plinks">
             <a href="https://arxiv.org/abs/2609.20475" target="_blank" rel="noopener">arXiv:2609.20475 ↗</a>
