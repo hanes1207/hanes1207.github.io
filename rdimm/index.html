@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RD-IMM Interactive Demo</title>
+<title>RD-IMM</title>
 <meta name="description" content="Interactive demo of RD-IMM: IMM transition probabilities driven by the NIS of a reference coast filter, replaying the 50 Monte Carlo runs of the paper.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,6 +93,20 @@
   tr.sep th{font-style:italic;color:var(--ink2);border-top:1px solid var(--line);}
   .row-prop th,.row-prop td{font-weight:600;}
 
+  /* project-page header */
+  .hero{text-align:center;padding:14px 0 6px;}
+  .hero h1{font-size:1.9rem;max-width:860px;margin:6px auto 12px;}
+  .hero h1 .name{color:var(--prop);}
+  .badge{display:inline-block;font-size:.85rem;font-weight:600;padding:2px 12px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);margin-bottom:12px;}
+  .authors{font-size:1.05rem;margin:0 0 2px;} .authors span{white-space:nowrap;margin:0 7px;}
+  .authors sup,.affil sup{font-size:.7em;}
+  .affil{color:var(--muted);font-size:.92rem;margin:0 0 16px;}
+  .buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;}
+  .buttons a{background:var(--ink);color:#fff;padding:7px 18px;border-radius:999px;font-size:.95rem;}
+  .buttons a:hover{background:#000;text-decoration:none;}
+  .abstract{text-align:justify;hyphens:auto;}
+  pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-size:.82rem;line-height:1.5;overflow-x:auto;margin:0;}
+  section > .wrap > h2{text-align:center;font-size:1.3rem;margin-bottom:12px;}
   figure{margin:10px 0 0;}
   figure img{width:100%;max-width:760px;height:auto;display:block;margin:0 auto;}
   figcaption{font-size:.88rem;color:var(--ink2);margin:8px auto 0;max-width:760px;}
@@ -116,22 +130,64 @@
 <header>
   <div class="wrap">
     <a class="back" href="../index.html#publications">← Euiseok Han</a>
-    <h1>RD-IMM: Reference-Filter-Driven Transition Probabilities for IMM-Based Satellite Maneuver Detection</h1>
-    <p class="paper">Euiseok Han, Sangheon Choi, Seung-Hyun Kong<span class="st">Preprint</span> · <a href="https://arxiv.org/abs/2610.11242" target="_blank" rel="noopener">arXiv:2610.11242 ↗</a></p>
-    <p class="lead">
-      The interacting multiple model (IMM) filter tracks a satellite with a coast model and a maneuver model and mixes them
-      through a transition probability matrix (TPM). Adaptive-TPM methods update the TPM from statistics computed inside the IMM,
-      which already depend on the TPM through the mixing step. RD-IMM drives the coast-to-maneuver probability <i>p</i><sub>CM</sub>
-      from the normalized innovation squared (NIS) of a reference coast filter that is not mixed with the IMM.
-    </p>
+    <div class="hero">
+      <h1><span class="name">RD-IMM</span>: Reference-Filter-Driven Transition Probabilities for IMM-Based Satellite Maneuver Detection</h1>
+      <div class="badge">Preprint</div>
+      <p class="authors">
+        <span><a href="https://hanes1207.github.io">Euiseok Han</a><sup>a</sup></span>
+        <span>Sangheon Choi<sup>b</sup></span>
+        <span>Seung-Hyun Kong<sup>c</sup></span>
+      </p>
+      <p class="affil"><sup>a</sup>School of Electrical Engineering, <sup>b</sup>Department of Aerospace Engineering,
+        <sup>c</sup>Cho Chun Shik Graduate School of Mobility, KAIST</p>
+      <div class="buttons">
+        <a href="https://arxiv.org/pdf/2610.11242" target="_blank" rel="noopener">Paper</a>
+        <a href="https://arxiv.org/abs/2610.11242" target="_blank" rel="noopener">arXiv</a>
+        <a href="#explorer">Interactive demo</a>
+      </div>
+    </div>
   </div>
 </header>
 
+<section id="abstract">
+  <div class="wrap">
+    <h2>Abstract</h2>
+    <p class="abstract">
+      Maneuver detection of non-cooperative satellites is an essential task of space situational awareness.
+      The interacting multiple model (IMM) filter has been applied to detect unannounced maneuvers, but the standard IMM assumes a fixed
+      Markov transition probability matrix (TPM) that must be tuned without knowledge of the maneuver rate of the target.
+      To avoid this tuning, adaptive-TPM approaches update the TPM online from statistics computed inside the IMM.
+      However, these statistics already depend on the TPM through the mixing step, and this dependence forms a feedback loop.
+      Under the dynamics mismatch of orbit tracking, the loop can keep the maneuver probability high in the absence of a maneuver or
+      suppress its rise when a maneuver occurs.
+      In this paper, the TPM is driven by the normalized innovation squared (NIS) of a reference coast filter that is not mixed with the IMM,
+      and the NIS is mapped continuously to the coast-to-maneuver transition probability.
+      The reference-driven IMM (RD-IMM) is evaluated with four space-based optical sensors tracking a geosynchronous target.
+      RD-IMM detects small burns that the fixed-TPM IMM fails to detect, with few false declarations in maneuver-free runs, and avoids
+      both failures of the closed-loop adaptation.
+      Moreover, RD-IMM reduces the position error after a small in-track burn by more than 50% compared with the single-filter approaches.
+    </p>
+  </div>
+</section>
+
 <main>
+
+<section id="structure">
+  <div class="wrap">
+    <h2>Method</h2>
+    <figure>
+      <img src="fig_arch.png" alt="RD-IMM block diagram: angle measurements feed a reference CKF that is never mixed; its NIS passes through the chi-square surprisal, a fading maximum and a logistic map to set the TPM of the IMM. The internal closed loop is removed.">
+      <figcaption>
+        The reference filter receives the same measurements as the IMM, but neither the TPM nor the mode probabilities enter its recursion.
+        In the <i>internal-NIS drive</i> variant, the same map takes the NIS of the IMM's coast sub-filter instead, which closes the loop through the mixing step.
+      </figcaption>
+    </figure>
+  </div>
+</section>
 
 <section id="explorer">
   <div class="wrap">
-    <h2>Monte Carlo runs</h2>
+    <h2>Interactive Demo: Monte Carlo Runs</h2>
     <p class="small muted">
       A geostationary target is tracked by four space-based optical sensors (azimuth and elevation every 60 s). The truth includes
       J<sub>2</sub>–J<sub>6</sub>, lunisolar third-body and solar radiation pressure accelerations, whereas all filters propagate J<sub>2</sub> only.
@@ -180,7 +236,8 @@
 
 <section id="results">
   <div class="wrap">
-    <h2>Table 1. Detection and tracking results (50 Monte Carlo runs per case)</h2>
+    <h2>Results</h2>
+    <p class="small muted" style="margin-bottom:2px">Detection and tracking results (50 Monte Carlo runs per case).</p>
     <p class="small muted">Detection probability P<sub>d</sub> / median latency [min]. The highlighted column is the case selected above.</p>
     <div class="tablewrap"><table id="tab1"></table></div>
     <p class="note">* Declared before t<sub>b</sub> in more than half of the runs. –: no declaration (EKF) or not evaluated (internal-NIS drive).
@@ -188,16 +245,16 @@
   </div>
 </section>
 
-<section id="structure">
+
+<section id="bibtex">
   <div class="wrap">
-    <h2>Figure 1. Structure of the reference-driven IMM (RD-IMM)</h2>
-    <figure>
-      <img src="fig_arch.png" alt="RD-IMM block diagram: angle measurements feed a reference CKF that is never mixed; its NIS passes through the chi-square surprisal, a fading maximum and a logistic map to set the TPM of the IMM. The internal closed loop is removed.">
-      <figcaption>
-        The reference filter receives the same measurements as the IMM, but neither the TPM nor the mode probabilities enter its recursion.
-        In the <i>internal-NIS drive</i> variant, the same map takes the NIS of the IMM's coast sub-filter instead, which closes the loop through the mixing step.
-      </figcaption>
-    </figure>
+    <h2>BibTeX</h2>
+<pre>@article{han2026rdimm,
+  title   = {Reference-Filter-Driven Transition Probabilities for IMM-Based Satellite Maneuver Detection},
+  author  = {Han, Euiseok and Choi, Sangheon and Kong, Seung-Hyun},
+  journal = {arXiv preprint arXiv:2610.11242},
+  year    = {2026}
+}</pre>
   </div>
 </section>
 
