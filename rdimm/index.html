@@ -4,122 +4,130 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RD-IMM</title>
-<meta name="description" content="Interactive demo of RD-IMM: IMM transition probabilities driven by the NIS of a reference coast filter, replaying the 50 Monte Carlo runs of the paper.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<meta name="description" content="RD-IMM: IMM transition probabilities driven by the NIS of a reference coast filter for satellite maneuver detection, with an interactive replay of the Monte Carlo runs of the paper.">
+<meta property="og:title" content="RD-IMM: Reference-Filter-Driven Transition Probabilities for IMM-Based Satellite Maneuver Detection">
+<meta property="og:image" content="https://hanes1207.github.io/rdimm/fig_arch.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.32.0/plotly.min.js"></script>
 <script src="rdimm_data.js"></script>
 <script src="rdimm_geom.js"></script>
 <style>
   :root{
     color-scheme:light;
-    --bg:#ffffff; --card:#f7f7f6; --ink:#111111; --ink2:#3d3d3d; --muted:#6b6b6b;
-    --line:#dedede; --grid:#ececec; --accent:#0072B2; --hl:#eaf3fa; --warm:#f3f3f3;
+    --bg:#ffffff; --ink:#1a1a1a; --ink2:#374151; --muted:#6b7280; --line:#e5e7eb;
+    --accent:#2563eb; --card:#f7f7f8; --dark:#1f2328; --grid:#eef0f2; --hl:#eef2ff; --warm:#f3f4f6;
     /* paper colours (Okabe-Ito), one per method as in the figures */
-    --prop:#D55E00; --goff:#000000; --jia:#0072B2; --aimm:#CC79A7; --own:#56B4E9; --gate:#E69F00; --ekf:#009E73;
+    --prop:#D55E00; --goff:#000000; --jia:#0072B2; --xie:#E69F00; --own:#56B4E9; --gate:#009E73;
     --burn:#D55E00; --false:#b3261e;
-    --serif:"STIX Two Text","STIXGeneral","Times New Roman",Times,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   }
   *{box-sizing:border-box;}
   html{font-size:16px;}
-  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.55;font-family:var(--serif);}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.65;font-family:var(--sans);-webkit-font-smoothing:antialiased;}
   a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
-  .wrap{max-width:1000px;margin:0 auto;padding:0 20px;}
-  header{padding:34px 0 20px;border-bottom:1px solid var(--line);}
-  .back{font-size:.85rem;color:var(--muted);}
-  h1{font-size:1.6rem;margin:8px 0 4px;font-weight:700;line-height:1.25;}
-  .paper{font-size:.95rem;color:var(--ink2);margin:0;}
-  .st{display:inline-block;font-size:.78rem;padding:0 8px;border:1px solid var(--line);
-    border-radius:999px;color:var(--muted);margin-left:6px;vertical-align:1px;white-space:nowrap;}
-  .lead{margin:12px 0 0;}
-  section{padding:26px 0;border-bottom:1px solid var(--line);}
-  section:last-of-type{border-bottom:none;}
-  h2{font-size:1.15rem;font-weight:600;margin:0 0 6px;}
-  p{margin:0 0 10px;}
-  .muted{color:var(--muted);} .small{font-size:.9rem;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+  .back{display:block;font-size:.85rem;color:var(--muted);padding-top:22px;}
 
-  /* controls */
-  .controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:12px 0 10px;}
+  header{text-align:center;padding:30px 0 34px;}
+  h1{font-size:2.05rem;line-height:1.25;margin:0 auto 14px;max-width:860px;letter-spacing:-.01em;}
+  h1 .name{color:var(--accent);}
+  .badge{display:inline-block;font-size:.85rem;font-weight:600;padding:3px 12px;border-radius:999px;
+    background:#eef2ff;color:#3730a3;margin-bottom:16px;}
+  .authors{font-size:1.05rem;margin:0 0 4px;}
+  .authors span{white-space:nowrap;margin:0 7px;}
+  .authors sup,.affil sup{font-size:.7em;}
+  .affil{color:var(--muted);font-size:.95rem;margin:0 0 20px;}
+  .buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;}
+  .buttons a{display:inline-flex;align-items:center;gap:7px;background:var(--dark);color:#fff;
+    padding:8px 18px;border-radius:999px;font-size:.95rem;font-weight:500;}
+  .buttons a:hover{background:#000;text-decoration:none;}
+  .buttons svg{width:17px;height:17px;fill:currentColor;flex:0 0 17px;}
+
+  section{padding:34px 0;border-top:1px solid var(--line);}
+  h2{text-align:center;font-size:1.45rem;margin:0 0 18px;}
+  h3{font-size:1.05rem;margin:22px 0 6px;}
+  p{margin:0 0 12px;}
+  .small{font-size:.92rem;color:var(--ink2);}
+  .muted{color:var(--muted);}
+  .abstract{text-align:justify;hyphens:auto;}
+  figure{margin:0;}
+  figure img{width:100%;height:auto;display:block;}
+  figure.narrow img{max-width:520px;margin:0 auto;}
+  figcaption{font-size:.9rem;color:var(--ink2);margin:10px 0 0;}
+  .facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px;margin:14px 0 0;padding:0;list-style:none;font-size:.92rem;}
+  .facts li{border-left:3px solid var(--line);padding-left:10px;}
+  .facts b{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+  .points{margin:18px 0 0;padding-left:20px;} .points li{margin-bottom:6px;}
+
+  /* demo controls */
+  .controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:14px 0 10px;}
   .ctl{display:flex;align-items:center;gap:8px;}
-  .ctl>label{font-size:.88rem;color:var(--muted);font-style:italic;}
-  .seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fff;}
-  .seg button{border:0;background:transparent;color:var(--ink2);font:inherit;font-size:.9rem;padding:4px 11px;cursor:pointer;}
+  .ctl>label{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff;}
+  .seg button{border:0;background:transparent;color:var(--ink2);font:inherit;font-size:.88rem;padding:4px 12px;cursor:pointer;}
   .seg button+button{border-left:1px solid var(--line);}
-  .seg button.on{background:var(--ink);color:#fff;}
+  .seg button.on{background:var(--dark);color:#fff;}
   .seg button:disabled{opacity:.35;cursor:not-allowed;}
-  .btn{border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-size:.9rem;
-    padding:3px 10px;border-radius:6px;cursor:pointer;}
+  .btn{border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-size:.88rem;
+    padding:3px 11px;border-radius:999px;cursor:pointer;}
   .btn:hover{border-color:var(--muted);}
-  .btn.primary{background:var(--ink);border-color:var(--ink);color:#fff;min-width:80px;}
-  #runNum{font-variant-numeric:tabular-nums;min-width:58px;text-align:center;font-size:.92rem;}
-  .timebar{display:flex;align-items:center;gap:10px;margin:0 0 6px;}
-  .timebar input[type=range]{flex:1;accent-color:var(--ink);}
-  .timebar .tlabel{font-variant-numeric:tabular-nums;font-size:.92rem;color:var(--ink2);min-width:170px;text-align:right;}
-  .chips{display:flex;flex-wrap:wrap;gap:4px 8px;margin:2px 0 4px;}
+  .btn.primary{background:var(--dark);border-color:var(--dark);color:#fff;min-width:86px;}
+  .btn.primary:hover{background:#000;}
+  #runNum{font-variant-numeric:tabular-nums;min-width:58px;text-align:center;font-size:.9rem;}
+  .timebar{display:flex;align-items:center;gap:10px;margin:0 0 8px;}
+  .timebar input[type=range]{flex:1;accent-color:var(--dark);}
+  .timebar .tlabel{font-variant-numeric:tabular-nums;font-size:.9rem;color:var(--ink2);min-width:170px;text-align:right;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px 8px;margin:2px 0 6px;}
   .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;color:var(--ink);
-    font:inherit;font-size:14.6px;padding:1px 10px 1px 7px;border-radius:999px;cursor:pointer;}
-  .chip.off{opacity:.38;} .chip.off span{text-decoration:line-through;}
+    font:inherit;font-size:.86rem;padding:2px 11px 2px 8px;border-radius:999px;cursor:pointer;}
+  .chip.off{opacity:.4;} .chip.off span{text-decoration:line-through;}
   .chip:disabled{opacity:.25;cursor:not-allowed;}
+  .chips .vlab{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);align-self:center;margin-left:6px;}
 
-  .layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start;}
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start;}
   #plot{width:100%;height:680px;}
   .side{display:flex;flex-direction:column;gap:12px;}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:.9rem;}
-  .panel h3{margin:0 0 6px;font-size:.92rem;font-weight:600;}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:.86rem;line-height:1.5;}
+  .panel h3{margin:0 0 6px;font-size:.88rem;font-weight:600;}
   .orbit{background:#fff;}
   .orbit svg{width:100%;height:auto;display:block;}
-  .orbit svg text{font-family:var(--serif);}
-  .cbar{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--ink2);margin-top:4px;}
+  .orbit svg text{font-family:var(--sans);}
+  .cbar{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--ink2);margin-top:4px;}
   .cbar .sw{display:flex;border:1px solid #333;}
-  .cbar .sw span{width:22px;height:9px;display:block;}
+  .cbar .sw span{width:20px;height:9px;display:block;}
   .kv{display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-top:1px solid var(--line);}
   .kv:first-of-type{border-top:none;}
   .kv .k{display:flex;align-items:center;gap:7px;color:var(--ink2);}
   .kv .v{font-variant-numeric:tabular-nums;text-align:right;}
   .dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px;display:inline-block;}
-  .tag{font-size:.75rem;padding:0 5px;border-radius:4px;border:1px solid var(--false);margin-left:4px;color:var(--false);}
-  .note{font-size:.82rem;color:var(--muted);margin-top:6px;}
+  .tag{font-size:.72rem;padding:0 5px;border-radius:4px;border:1px solid var(--false);margin-left:4px;color:var(--false);}
+  .note{font-size:.8rem;color:var(--muted);margin-top:6px;}
 
   /* table */
-  .tablewrap{overflow-x:auto;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);margin-top:8px;}
-  table{border-collapse:collapse;width:100%;font-size:.82rem;font-variant-numeric:tabular-nums;}
-  th,td{padding:4px 5px;text-align:center;white-space:nowrap;}
-  thead th{white-space:normal;}
-  thead tr:last-child th{border-bottom:1px solid var(--ink);}
-  thead th{font-weight:400;}
+  .tablewrap{overflow-x:auto;margin-top:6px;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);}
+  table{border-collapse:collapse;width:100%;font-size:.84rem;font-variant-numeric:tabular-nums;}
+  th,td{padding:5px 6px;text-align:center;white-space:nowrap;}
+  thead th{font-weight:600;white-space:normal;}
+  thead tr:last-child th{border-bottom:1px solid var(--ink);font-weight:400;color:var(--ink2);}
   tbody th{text-align:left;font-weight:400;}
   td.cur,th.cur{background:var(--hl);}
   tr.sep th{font-style:italic;color:var(--ink2);border-top:1px solid var(--line);}
   .row-prop th,.row-prop td{font-weight:600;}
+  .grp{border-left:1px solid var(--line);}
 
-  /* project-page header */
-  .hero{text-align:center;padding:14px 0 6px;}
-  .hero h1{font-size:1.9rem;max-width:860px;margin:6px auto 12px;}
-  .hero h1 .name{color:var(--prop);}
-  .badge{display:inline-block;font-size:.85rem;font-weight:600;padding:2px 12px;border-radius:999px;border:1px solid var(--line);color:var(--ink2);margin-bottom:12px;}
-  .authors{font-size:1.05rem;margin:0 0 2px;} .authors span{white-space:nowrap;margin:0 7px;}
-  .authors sup,.affil sup{font-size:.7em;}
-  .affil{color:var(--muted);font-size:.92rem;margin:0 0 16px;}
-  .buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;}
-  .buttons a{background:var(--ink);color:#fff;padding:7px 18px;border-radius:999px;font-size:.95rem;}
-  .buttons a:hover{background:#000;text-decoration:none;}
-  .abstract{text-align:justify;hyphens:auto;}
-  pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-size:.82rem;line-height:1.5;overflow-x:auto;margin:0;}
-  section > .wrap > h2{text-align:center;font-size:1.3rem;margin-bottom:12px;}
-  figure{margin:10px 0 0;}
-  figure img{width:100%;max-width:760px;height:auto;display:block;margin:0 auto;}
-  figcaption{font-size:.88rem;color:var(--ink2);margin:8px auto 0;max-width:760px;}
-  footer{padding:22px 0 44px;color:var(--muted);font-size:.85rem;}
+  pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+    font-size:.82rem;line-height:1.5;overflow-x:auto;margin:0;}
+  footer{padding:24px 0 48px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;text-align:center;}
+  footer p{max-width:760px;margin:0 auto 8px;}
 
   @media (max-width:900px){
     .layout{grid-template-columns:1fr;}
     .side{display:grid;grid-template-columns:1fr 1fr;}
     #plot{height:720px;}
   }
-  @media (max-width:560px){
+  @media (max-width:640px){
     .wrap{padding:0 16px;}
-    h1{font-size:1.4rem;}
+    h1{font-size:1.5rem;}
+    .facts{grid-template-columns:1fr;}
     .side{grid-template-columns:1fr;}
     .timebar .tlabel{min-width:0;}
   }
@@ -127,75 +135,41 @@
 </head>
 <body>
 
-<header>
-  <div class="wrap">
-    <a class="back" href="../index.html#publications">← Euiseok Han</a>
-    <div class="hero">
-      <h1><span class="name">RD-IMM</span>: Reference-Filter-Driven Transition Probabilities for IMM-Based Satellite Maneuver Detection</h1>
-      <div class="badge">Preprint</div>
-      <p class="authors">
-        <span><a href="https://hanes1207.github.io">Euiseok Han</a><sup>a</sup></span>
-        <span>Sangheon Choi<sup>b</sup></span>
-        <span>Seung-Hyun Kong<sup>c</sup></span>
-      </p>
-      <p class="affil"><sup>a</sup>School of Electrical Engineering, <sup>b</sup>Department of Aerospace Engineering,
-        <sup>c</sup>Cho Chun Shik Graduate School of Mobility, KAIST</p>
-      <div class="buttons">
-        <a href="https://arxiv.org/pdf/2610.11242" target="_blank" rel="noopener">Paper</a>
-        <a href="https://arxiv.org/abs/2610.11242" target="_blank" rel="noopener">arXiv</a>
-        <a href="#explorer">Interactive demo</a>
-      </div>
-    </div>
-  </div>
-</header>
+<div class="wrap">
+  <a class="back" href="../index.html#publications">← Euiseok Han</a>
 
-<section id="abstract">
-  <div class="wrap">
-    <h2>Abstract</h2>
-    <p class="abstract">
-      Maneuver detection of non-cooperative satellites is an essential task of space situational awareness.
-      The interacting multiple model (IMM) filter has been applied to detect unannounced maneuvers, but the standard IMM assumes a fixed
-      Markov transition probability matrix (TPM) that must be tuned without knowledge of the maneuver rate of the target.
-      To avoid this tuning, adaptive-TPM approaches update the TPM online from statistics computed inside the IMM.
-      However, these statistics already depend on the TPM through the mixing step, and this dependence forms a feedback loop.
-      Under the dynamics mismatch of orbit tracking, the loop can keep the maneuver probability high in the absence of a maneuver or
-      suppress its rise when a maneuver occurs.
-      In this paper, the TPM is driven by the normalized innovation squared (NIS) of a reference coast filter that is not mixed with the IMM,
-      and the NIS is mapped continuously to the coast-to-maneuver transition probability.
-      The reference-driven IMM (RD-IMM) is evaluated with four space-based optical sensors tracking a geosynchronous target.
-      RD-IMM detects small burns that the fixed-TPM IMM fails to detect, with few false declarations in maneuver-free runs, and avoids
-      both failures of the closed-loop adaptation.
-      Moreover, RD-IMM reduces the position error after a small in-track burn by more than 50% compared with the single-filter approaches.
+  <header>
+    <h1><span class="name">RD-IMM</span>: Reference-Filter-Driven Transition Probabilities for IMM-Based Satellite Maneuver Detection</h1>
+    <div class="badge">Preprint</div>
+    <p class="authors">
+      <span><a href="https://hanes1207.github.io">Euiseok Han</a><sup>1</sup></span>
+      <span>Sangheon Choi<sup>2</sup></span>
+      <span>Seung-Hyun Kong<sup>3</sup></span>
     </p>
-  </div>
-</section>
+    <p class="affil"><sup>1</sup>School of Electrical Engineering, <sup>2</sup>Department of Aerospace Engineering,
+      <sup>3</sup>Cho Chun Shik Graduate School of Mobility, KAIST</p>
+    <div class="buttons">
+      <a href="https://arxiv.org/pdf/2610.11242" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM8 13h8v1.6H8V13zm0 3.4h8V18H8v-1.6z"/></svg>Paper</a>
+      <a href="https://arxiv.org/abs/2610.11242" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2H4V4zm0 5h16v2H4V9zm0 5h10v2H4v-2zm0 5h10v2H4v-2z"/></svg>arXiv</a>
+      <a href="#demo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 6 6 4-6 4V8z"/></svg>Interactive demo</a>
+    </div>
+  </header>
+</div>
 
-<main>
-
-<section id="structure">
-  <div class="wrap">
-    <h2>Method</h2>
-    <figure>
-      <img src="fig_arch.png" alt="RD-IMM block diagram: angle measurements feed a reference CKF that is never mixed; its NIS passes through the chi-square surprisal, a fading maximum and a logistic map to set the TPM of the IMM. The internal closed loop is removed.">
-      <figcaption>
-        The reference filter receives the same measurements as the IMM, but neither the TPM nor the mode probabilities enter its recursion.
-        In the <i>internal-NIS drive</i> variant, the same map takes the NIS of the IMM's coast sub-filter instead, which closes the loop through the mixing step.
-      </figcaption>
-    </figure>
-  </div>
-</section>
-
-<section id="explorer">
+<section id="demo">
   <div class="wrap">
     <h2>Interactive Demo: Monte Carlo Runs</h2>
-    <p class="small muted">
-      A geostationary target is tracked by four space-based optical sensors (azimuth and elevation every 60 s). The truth includes
-      J<sub>2</sub>–J<sub>6</sub>, lunisolar third-body and solar radiation pressure accelerations, whereas all filters propagate J<sub>2</sub> only.
-      A single impulse is applied at <i>t</i><sub>b</sub> = 120 min, and the first 30 min are excluded as warm-up.
+    <p class="small">
+      Replay of the Monte Carlo runs behind Table 1 of the paper. Pick a maneuver, step through the runs or view all of them at once,
+      and drag the time slider to follow the surprisal of the reference filter, the transition probability it sets, the maneuver
+      probability and the position error of each filter.
     </p>
 
     <div class="controls">
-      <div class="ctl"><label>burn</label>
+      <div class="ctl"><label>maneuver</label>
         <div class="seg" id="dirSeg">
           <button data-d="N">none</button><button data-d="T" class="on">in-track</button><button data-d="Z">out-of-plane</button>
         </div></div>
@@ -205,7 +179,7 @@
         </div></div>
       <div class="ctl"><label>view</label>
         <div class="seg" id="modeSeg">
-          <button data-m="run" class="on">one run</button><button data-m="all">all 50 runs</button>
+          <button data-m="run" class="on">one run</button><button data-m="all">all runs</button>
         </div></div>
       <div class="ctl" id="runCtl"><button class="btn" id="runPrev" aria-label="Previous run">‹</button>
         <span id="runNum">run 6</span><button class="btn" id="runNext" aria-label="Next run">›</button></div>
@@ -234,17 +208,78 @@
   </div>
 </section>
 
-<section id="results">
+<section id="abstract">
   <div class="wrap">
-    <h2>Results</h2>
-    <p class="small muted" style="margin-bottom:2px">Detection and tracking results (50 Monte Carlo runs per case).</p>
-    <p class="small muted">Detection probability P<sub>d</sub> / median latency [min]. The highlighted column is the case selected above.</p>
-    <div class="tablewrap"><table id="tab1"></table></div>
-    <p class="note">* Declared before t<sub>b</sub> in more than half of the runs. –: no declaration (EKF) or not evaluated (internal-NIS drive).
-      Post-burn RMSE is over the first 60 min after an in-track 1 m/s impulse.</p>
+    <h2>Abstract</h2>
+    <p class="abstract">
+      Detecting maneuvers of non-cooperative satellites is essential for space situational awareness.
+      The interacting multiple model (IMM) filter has been applied to detect unannounced maneuvers, but the standard IMM assumes a fixed
+      Markov transition probability matrix (TPM) that must be tuned without knowledge of the maneuver rate of the target.
+      To avoid the tuning, adaptive-TPM approaches update the TPM online from statistics computed inside the IMM.
+      However, the statistics already depend on the TPM through the interaction step, and the dependence forms a feedback loop.
+      The loop itself can raise the maneuver probability in the absence of a maneuver or suppress its rise when a maneuver occurs.
+      In this paper, the TPM is driven by the normalized innovation squared (NIS) of a reference coast filter that is decoupled from the IMM,
+      and the NIS is mapped continuously to the coast-to-maneuver transition probability.
+      The reference-driven IMM (RD-IMM) is evaluated with four space-based optical sensors tracking a geostationary target.
+      In the simulation, the reference filter keeps its sensitivity after small maneuvers, whereas the NIS of the coast sub-filter of the
+      IMM is reduced by the interaction step.
+      RD-IMM detects 1–3 m/s maneuvers, which the fixed-TPM IMM rarely detects, with a false-declaration rate below the false-alarm
+      probability of 0.05 set for the reference filter.
+      In the first hour after the 1–3 m/s maneuvers, RD-IMM also has a lower position error than the compared filters.
+    </p>
   </div>
 </section>
 
+<section id="method">
+  <div class="wrap">
+    <h2>Method</h2>
+    <figure>
+      <img src="fig_arch.png" alt="RD-IMM block diagram: angle measurements feed a reference CKF that is never mixed; its NIS passes through the chi-square surprisal, a fading maximum and a logistic map to set the TPM of the IMM. The internal closed loop through the mode probabilities, likelihoods and coast-filter NIS is removed." loading="lazy">
+      <figcaption>
+        Structure of RD-IMM. The reference filter receives the same measurements as the IMM, but neither the TPM nor the mode
+        probabilities enter its recursion, and its covariance is reset when a maneuver is declared.
+      </figcaption>
+    </figure>
+    <ul class="points">
+      <li><b>Surprisal.</b> The NIS of the reference filter is converted to the χ<sup>2</sup> surprisal
+        <i>s</i><sub>k</sub> = −log<sub>10</sub>[1 − <i>F</i>(Ψ<sup>ref</sup><sub>k</sub>)], which has one scale for any number of observing sensors.</li>
+      <li><b>Continuous map.</b> A fading maximum α<sub>k</sub> = max(ρα<sub>k−1</sub>, <i>s</i><sub>k</sub>/<i>c</i>) is mapped by a logistic function
+        to the coast-to-maneuver probability <i>p</i><sub>CM,k</sub> between <i>p</i><sub>lo</sub> = 0.005 and <i>p</i><sub>hi</sub> = 0.60.</li>
+      <li><b>Design rule.</b> The constant <i>c</i> = log<sub>10</sub>(<i>N</i>/<i>P</i><sub>FA</sub>) = 3.87 follows from the false-alarm
+        probability <i>P</i><sub>FA</sub> = 0.05 over the <i>N</i> = 371 measurement times after warm-up, without training.</li>
+      <li><b>Internal-NIS drive.</b> The same map driven by the NIS of the coast sub-filter of the IMM closes the loop through the
+        interaction step. The variant is included in the demo to show the reduced surprisal after small maneuvers.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="scenario">
+  <div class="wrap">
+    <h2>Scenario</h2>
+    <figure class="narrow">
+      <img src="fig_scenario.png" alt="Geostationary target orbit coloured by the number of observing space-based optical sensors, with the four sensors in low Earth orbit, the maneuver point at 120 min and the Sun direction" loading="lazy">
+      <figcaption>Space-based optical tracking scenario of a geostationary target, adapted from Jia et al. (2015).</figcaption>
+    </figure>
+    <ul class="facts">
+      <li><b>Sensors</b>Four space-based optical sensors on a 622 km, 96° orbit measure azimuth and elevation every 60 s; two to four observe the target at a time.</li>
+      <li><b>Truth vs. filters</b>The truth includes J<sub>2</sub>–J<sub>6</sub>, lunisolar third-body and solar radiation pressure accelerations; the filters propagate J<sub>2</sub> only.</li>
+      <li><b>Maneuver</b>A single impulse of 0.5–10 m/s, in-track or out-of-plane, at <i>t</i><sub>b</sub> = 120 min of a 400 min arc; the first 30 min are warm-up.</li>
+      <li><b>Runs</b>50 Monte Carlo runs per case with the same measurements for all filters; 500 maneuver-free runs for the false-declaration rate.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <h2>Results</h2>
+    <p class="small">Detection and tracking results as printed in Table 1 of the paper (50 Monte Carlo runs per case, 500 maneuver-free
+      runs for the false-declaration rate). <i>P</i><sub>d</sub> / median latency [min]. The highlighted column is the case selected in the demo.</p>
+    <div class="tablewrap"><table id="tab1"></table></div>
+    <p style="font-size:.82rem;color:var(--muted);margin-top:6px">–: no detected run. Post-maneuver RMSE is over the first 60 min after an
+      in-track 1 m/s impulse. CI-IMM declares a maneuver when the NIS exceeds Ψ<sub>max</sub> = 30, and the other filters when the maneuver
+      probability exceeds 0.5.</p>
+  </div>
+</section>
 
 <section id="bibtex">
   <div class="wrap">
@@ -258,33 +293,33 @@
   </div>
 </section>
 
-</main>
-
 <footer>
   <div class="wrap">
-    Data: the 50 Monte Carlo runs per case behind Table 1 and Figs. 3–6 of the paper, stored at 8-bit resolution for this page
-    (declaration times and the table use full-precision results). The orbit view uses the scenario geometry of Fig. 2.
-    RD-IMM parameters: p<sub>lo</sub> = 0.005, p<sub>hi</sub> = 0.60, γ = 8, p<sub>MC</sub> = 0.10, ρ = 0.7, s<sub>max</sub> = 30, c = 4.
+    <p>Demo data: the 50 Monte Carlo runs per case behind Table 1, stored at 8-bit resolution for this page; declaration times use
+      full-precision results, and the all-runs view of the maneuver-free case uses the 500 runs.
+      RD-IMM parameters: <i>p</i><sub>lo</sub> = 0.005, <i>p</i><sub>hi</sub> = 0.60, γ = 8, <i>p</i><sub>MC</sub> = 0.10, ρ = 0.7,
+      <i>s</i><sub>max</sub> = 30, <i>c</i> = 3.87.</p>
+    <a href="../index.html">Euiseok Han</a> · KAIST
   </div>
 </footer>
 
 <script>
 (function(){
   'use strict';
-  var D = window.RDIMM_DATA, G = window.RDIMM_GEOM, W = D.W;
+  var D = window.RDIMM_DATA, G = window.RDIMM_GEOM, W = D.W, CC = D.c;
   var METHODS = {
-    prop:{name:'RD-IMM (proposed)', short:'RD-IMM', v:'--prop', dash:'solid', w:2.2},
-    own:{name:'internal-NIS drive', short:'internal-NIS', v:'--own', dash:'solid', w:1.5},
-    goff:{name:'NIS test', short:'NIS test', v:'--goff', dash:'dot', w:1.6},
+    prop:{name:'RD-IMM', short:'RD-IMM', v:'--prop', dash:'solid', w:2.2},
+    goff:{name:'CI-IMM', short:'CI-IMM', v:'--goff', dash:'dot', w:1.6},
+    xie:{name:'ATPM-PIMM', short:'ATPM-PIMM', v:'--xie', dash:'dashdot', w:1.5},
     jia:{name:'IMM-CKF', short:'IMM-CKF', v:'--jia', dash:'dash', w:1.4},
-    aimm:{name:'AIMM', short:'AIMM', v:'--aimm', dash:'solid', w:1.3},
-    nisgate:{name:'binary NIS gate', short:'binary gate', v:'--gate', dash:'dash', w:1.4},
-    ekf:{name:'EKF', short:'EKF', v:'--ekf', dash:'dashdot', w:1.4}
+    own:{name:'internal-NIS drive', short:'internal-NIS', v:'--own', dash:'solid', w:1.5},
+    nisgate:{name:'binary NIS gate', short:'binary gate', v:'--gate', dash:'dash', w:1.4}
   };
-  var ORDER = ['prop','own','goff','jia','aimm','nisgate','ekf'];
-  var visible = {prop:true, own:true, goff:true, jia:true, aimm:false, nisgate:false, ekf:true};
+  var BASE = ['prop','goff','xie','jia'], VARS = ['own','nisgate'], ORDER = BASE.concat(VARS);
+  var PLOT = ['jia','xie','nisgate','own','goff','prop'];          // drawing order, RD-IMM on top
+  var visible = {prop:true, goff:true, xie:true, jia:true, own:false, nisgate:false};
   var S = {dir:'T', dv:'1', mode:'run', run:5, t:400, playing:false};
-  var FONT = getComputedStyle(document.documentElement).getPropertyValue('--serif').trim();
+  var FONT = getComputedStyle(document.documentElement).getPropertyValue('--sans').trim();
 
   function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
   function col(m){ return css(METHODS[m].v); }
@@ -317,35 +352,28 @@
     return out;
   }
   function agg(key){ return C().agg[key] || null; }
+  function hasM(m){ return m !== 'own' || C().own; }
+  function on(m){ return visible[m] && hasM(m); }
 
   // ---- Table 1 (as printed in the paper) ----
-  var DV = ['0.5','1','3','10'];
-  var T1 = {
-    ekf:{fa:'–', coast:'0.44', T:['–','–','–','–'], Z:['–','–','–','–'], post:'2.30'},
-    jia:{fa:'0.10', coast:'1.09', T:['0.06 / 54','0.06 / 54','0.16 / 8','1.00 / 4'], Z:['0.06 / 54','0.06 / 54','0.12 / 17','0.98 / 4'], post:'1.10'},
-    aimm:{fa:'1.00', coast:'1.77', T:['1.00*','1.00*','1.00*','1.00*'], Z:['1.00*','1.00*','1.00*','1.00*'], post:'1.84'},
-    goff:{fa:'0.02', coast:'0.44', T:['0.02 / 199','0.58 / 148','0.98 / 15','1.00 / 5'], Z:['0.14 / 108','0.98 / 45','0.98 / 12','1.00 / 5'], post:'2.23'},
-    prop:{fa:'0.04', coast:'0.96', T:['0.16 / 210','0.74 / 88','0.96 / 13','1.00 / 4'], Z:['0.48 / 85','0.98 / 45','0.92 / 11','1.00 / 4'], post:'1.04'},
-    own:{fa:'0.04', coast:'0.96', T:['–','0.04 / 40','–','–'], Z:['–','0.04 / 40','–','–'], post:'0.98'},
-    nisgate:{fa:'0.04', coast:'0.94', T:['0.06 / 54','0.60 / 108','1.00 / 14','1.00 / 4'], Z:['0.18 / 103','1.00 / 45','1.00 / 12','1.00 / 4'], post:'0.98'}
-  };
-  var TNAME = {ekf:'EKF', jia:'IMM-CKF', aimm:'AIMM', goff:'NIS test', prop:'RD-IMM (proposed)', own:'Internal-NIS drive', nisgate:'Binary NIS gate'};
+  var DV = ['0.5','1','3','10'], T1 = D.table;
+  var TNAME = {jia:'IMM-CKF', xie:'ATPM-PIMM', goff:'CI-IMM', prop:'RD-IMM', own:'Internal-NIS drive', nisgate:'Binary NIS gate'};
   function buildTable(){
     var cur = S.dir === 'N' ? 'N' : S.dir + DV.indexOf(S.dv);
-    var h = '<thead><tr><th rowspan="2" style="text-align:left">Filter</th><th colspan="2">maneuver-free</th>' +
-      '<th colspan="4">in-track P<sub>d</sub> / latency [min]</th><th colspan="4">out-of-plane P<sub>d</sub> / latency [min]</th><th>post-burn RMSE [km]</th></tr><tr>' +
-      '<th class="' + (cur === 'N' ? 'cur' : '') + '">false decl.</th><th>coast RMSE [km]</th>';
-    ['T','Z'].forEach(function(d){ DV.forEach(function(v, i){ h += '<th class="' + (cur === d + i ? 'cur' : '') + '">' + v + ' m/s</th>'; }); });
-    h += '<th>in-track 1 m/s</th></tr></thead><tbody>';
+    var h = '<thead><tr><th rowspan="2" style="text-align:left">Filter</th><th colspan="2" class="grp">maneuver-free</th>' +
+      '<th colspan="4" class="grp">in-track <i>P</i><sub>d</sub> / latency [min]</th><th colspan="4" class="grp">out-of-plane <i>P</i><sub>d</sub> / latency [min]</th><th class="grp">post-maneuver RMSE [km]</th></tr><tr>' +
+      '<th class="grp' + (cur === 'N' ? ' cur' : '') + '">false decl.</th><th>coast RMSE [km]</th>';
+    ['T','Z'].forEach(function(d){ DV.forEach(function(v, i){ h += '<th class="' + (i ? '' : 'grp ') + (cur === d + i ? 'cur' : '') + '">' + v + ' m/s</th>'; }); });
+    h += '<th class="grp">in-track 1 m/s</th></tr></thead><tbody>';
     function row(m){
       var r = T1[m], s = '<tr class="row-' + m + '"><th>' + TNAME[m] + '</th>';
-      s += '<td class="' + (cur === 'N' ? 'cur' : '') + '">' + r.fa + '</td><td>' + r.coast + '</td>';
-      ['T','Z'].forEach(function(d){ r[d].forEach(function(x, i){ s += '<td class="' + (cur === d + i ? 'cur' : '') + '">' + x + '</td>'; }); });
-      return s + '<td>' + r.post + '</td></tr>';
+      s += '<td class="grp' + (cur === 'N' ? ' cur' : '') + '">' + r.fa + '</td><td>' + r.coast + '</td>';
+      ['T','Z'].forEach(function(d){ r[d].forEach(function(x, i){ s += '<td class="' + (i ? '' : 'grp ') + (cur === d + i ? 'cur' : '') + '">' + x + '</td>'; }); });
+      return s + '<td class="grp">' + r.post + '</td></tr>';
     }
-    ['ekf','jia','aimm','goff','prop'].forEach(function(m){ h += row(m); });
+    ['jia','xie','goff','prop'].forEach(function(m){ h += row(m); });
     h += '<tr class="sep"><th colspan="12">Variants of RD-IMM</th></tr>';
-    ['own','nisgate'].forEach(function(m){ h += row(m); });
+    VARS.forEach(function(m){ h += row(m); });
     document.getElementById('tab1').innerHTML = h + '</tbody>';
   }
 
@@ -355,13 +383,14 @@
     return '<svg width="24" height="8" aria-hidden="true"><line x1="1" y1="4" x2="23" y2="4" stroke="' + col(m) +
       '" stroke-width="' + Math.min(2.6, METHODS[m].w + .3) + '" stroke-dasharray="' + d + '" stroke-linecap="round"/></svg>';
   }
+  function chip(m){
+    var ok = hasM(m);
+    return '<button class="chip' + (visible[m] ? '' : ' off') + '" data-m="' + m + '"' +
+      (ok ? '' : ' disabled title="Time series stored only for the maneuver-free and 1 m/s cases"') +
+      ' aria-pressed="' + visible[m] + '">' + dashSvg(m) + '<span>' + METHODS[m].name + '</span></button>';
+  }
   function buildChips(){
-    var h = '', has = C().own;
-    ORDER.forEach(function(m){
-      var ok = m !== 'own' || has;
-      h += '<button class="chip' + (visible[m] ? '' : ' off') + '" data-m="' + m + '"' + (ok ? '' : ' disabled title="Evaluated only for the maneuver-free and 1 m/s cases"') +
-        ' aria-pressed="' + visible[m] + '">' + dashSvg(m) + '<span>' + METHODS[m].name + '</span></button>';
-    });
+    var h = BASE.map(chip).join('') + '<span class="vlab">variants</span>' + VARS.map(chip).join('');
     var el = document.getElementById('chips'); el.innerHTML = h;
     el.querySelectorAll('.chip').forEach(function(b){
       b.addEventListener('click', function(){ var m = b.dataset.m; visible[m] = !visible[m]; buildChips(); draw(); });
@@ -381,33 +410,33 @@
   function xs(){ var a = []; for (var k = 0; k <= S.t; k++) a.push(k); return a; }
 
   function traces(){
-    var c = C(), x = xs(), tr = [], run = S.mode === 'run', has = c.own;
-    var sr = run ? series('s_ref', 's') : agg('s_ref');
-    if (visible.prop) tr.push(mkTrace('prop', x, upto(sr), 'y', {name:'reference filter', hovertemplate:'s<sub>k</sub> reference %{y:.2f}'}));
-    if (has && visible.own){
+    var c = C(), x = xs(), tr = [], run = S.mode === 'run';
+    if (on('own')){
       var so = run ? series('s_own', 's') : agg('s_own');
       tr.push(mkTrace('own', x, upto(so), 'y', {name:'coast sub-filter', hovertemplate:'s<sub>k</sub> coast sub-filter %{y:.2f}'}));
     }
+    var sr = run ? series('s_ref', 's') : agg('s_ref');
+    if (visible.prop) tr.push(mkTrace('prop', x, upto(sr), 'y', {name:'reference filter', hovertemplate:'s<sub>k</sub> reference %{y:.2f}'}));
+    if (on('own') && run) tr.push(mkTrace('own', x, upto(series('pcm_own', 'pcm')), 'y2', {hovertemplate:'p<sub>CM</sub> %{y:.3f}'}));
     var pr = run ? series('pcm_ref', 'pcm') : agg('pcm_ref');
     if (visible.prop) tr.push(mkTrace('prop', x, upto(pr), 'y2', {hovertemplate:'p<sub>CM</sub> %{y:.3f}'}));
-    if (has && visible.own && run) tr.push(mkTrace('own', x, upto(series('pcm_own', 'pcm')), 'y2', {hovertemplate:'p<sub>CM</sub> %{y:.3f}'}));
-    ['prop','own','jia','aimm','nisgate','goff'].forEach(function(m){
-      if (!visible[m] || (m === 'own' && !has)) return;
+    PLOT.forEach(function(m){
+      if (!on(m)) return;
       if (run){
-        if (m === 'goff') return;
+        if (m === 'goff') return;     // CI-IMM declares from the NIS and has no maneuver probability before the declaration
         tr.push(mkTrace(m, x, upto(series('pm_' + m, 'p')), 'y3', {hovertemplate:'P<sub>M</sub> %{y:.2f}'}));
       } else {
         tr.push(mkTrace(m, x, upto(agg('cum_' + m)), 'y3', {hovertemplate:'declared %{y:.2f}', line:{color:col(m), width:METHODS[m].w, dash:METHODS[m].dash, shape:'hv'}}));
       }
     });
-    ['prop','goff','jia','ekf','nisgate'].forEach(function(m){
-      if (!visible[m]) return;
+    PLOT.forEach(function(m){
+      if (!on(m)) return;
       var e = run ? series('err_' + m, 'e') : agg('err_' + m);
       if (e) tr.push(mkTrace(m, x, upto(e), 'y4', {hovertemplate:'%{y:.2f} km'}));
     });
     if (run){
-      ['prop','own','jia','aimm','nisgate','goff'].forEach(function(m){
-        if (!visible[m] || !c.decl[m] || (m === 'own' && !has)) return;
+      PLOT.forEach(function(m){
+        if (!on(m) || !c.decl[m]) return;
         var pre = c.decl[m][0][S.run], post = c.decl[m][1][S.run], ks = [];
         if (pre >= 0 && pre <= S.t) ks.push(pre);
         if (post >= 0 && post <= S.t) ks.push(post);
@@ -421,51 +450,52 @@
   }
 
   function layout(){
-    var c = C(), ink = css('--ink2'), mut = css('--muted'), grid = css('--grid'), line = '#bdbdbd';
+    var c = C(), ink = css('--ink2'), mut = css('--muted'), grid = css('--grid'), line = '#c9cdd2';
     var run = S.mode === 'run';
     var ax = function(dom, title, extra){
-      return Object.assign({domain:dom, title:{text:title, font:{size:13.5, color:ink}, standoff:6}, gridcolor:grid,
-        zeroline:false, linecolor:line, mirror:true, ticks:'inside', ticklen:3, tickcolor:line, tickfont:{size:12, color:ink}, fixedrange:true}, extra || {});
+      return Object.assign({domain:dom, title:{text:title, font:{size:13, color:ink}, standoff:6}, gridcolor:grid,
+        zeroline:false, linecolor:line, mirror:true, ticks:'inside', ticklen:3, tickcolor:line, tickfont:{size:11.5, color:ink}, fixedrange:true}, extra || {});
     };
     var smax = 6, emax = 1;
     var sr0 = run ? series('s_ref', 's') : agg('s_ref');
     for (var i = 0; i < sr0.length; i++) if (sr0[i] > smax) smax = sr0[i];
     smax = Math.min(12, Math.ceil(smax * 1.05));
-    ['prop','goff','jia','ekf','nisgate'].forEach(function(m){
-      if (!visible[m]) return;
+    PLOT.forEach(function(m){
+      if (!on(m)) return;
       var e = run ? series('err_' + m, 'e') : agg('err_' + m);
       if (e) for (var j = W; j < e.length; j++) if (e[j] > emax) emax = e[j];
     });
     var shapes = [
-      {type:'rect', xref:'x', yref:'paper', x0:0, x1:W, y0:0, y1:1, fillcolor:css('--warm'), opacity:.8, line:{width:0}, layer:'below'},
-      {type:'line', xref:'x', yref:'y', x0:0, x1:400, y0:4, y1:4, line:{color:mut, width:1, dash:'dot'}}
+      {type:'rect', xref:'x', yref:'paper', x0:0, x1:W, y0:0, y1:1, fillcolor:css('--warm'), opacity:.9, line:{width:0}, layer:'below'},
+      {type:'line', xref:'x', yref:'y', x0:0, x1:400, y0:CC, y1:CC, line:{color:mut, width:1, dash:'dot'}}
     ];
     if (run) shapes.push({type:'line', xref:'x', yref:'y3', x0:0, x1:400, y0:.5, y1:.5, line:{color:mut, width:1, dash:'dot'}});
     if (S.dir !== 'N') shapes.push({type:'line', xref:'x', yref:'paper', x0:c.kb, x1:c.kb, y0:0, y1:1, line:{color:css('--burn'), width:1.1, dash:'dash'}});
     if (S.t < 400) shapes.push({type:'line', xref:'x', yref:'paper', x0:S.t, x1:S.t, y0:0, y1:1, line:{color:'#444', width:1}});
     var ann = [
-      {xref:'x', yref:'y', x:398, y:4, text:'<i>c</i> = 4 (α<sub>k</sub> = 1)', showarrow:false, xanchor:'right', yanchor:'bottom', font:{size:12, color:mut}},
-      {xref:'x', yref:'paper', x:W / 2, y:1.0, text:'warm-up', showarrow:false, yanchor:'bottom', font:{size:12, color:mut}}
+      {xref:'x', yref:'y', x:398, y:CC, text:'<i>c</i> = ' + CC.toFixed(2) + ' (α<sub>k</sub> = 1)', showarrow:false, xanchor:'right', yanchor:'bottom', font:{size:11.5, color:mut}},
+      {xref:'x', yref:'paper', x:W / 2, y:1.0, text:'warm-up', showarrow:false, yanchor:'bottom', font:{size:11.5, color:mut}}
     ];
-    if (run) ann.push({xref:'x', yref:'y3', x:398, y:.5, text:'declare', showarrow:false, xanchor:'right', yanchor:'bottom', font:{size:12, color:mut}});
-    if (S.dir !== 'N') ann.push({xref:'x', yref:'paper', x:c.kb, y:1.0, text:'burn <i>t</i><sub>b</sub>', showarrow:false, xanchor:'left', xshift:4, yanchor:'bottom', font:{size:13, color:css('--burn')}});
+    if (run) ann.push({xref:'x', yref:'y3', x:398, y:.5, text:'declare', showarrow:false, xanchor:'right', yanchor:'bottom', font:{size:11.5, color:mut}});
+    if (S.dir !== 'N') ann.push({xref:'x', yref:'paper', x:c.kb, y:1.0, text:'maneuver <i>t</i><sub>b</sub>', showarrow:false, xanchor:'left', xshift:4, yanchor:'bottom', font:{size:12.5, color:css('--burn')}});
+    var nR = (S.dir === 'N' && !run) ? (c.R_cum || c.R) : c.R;
     return {
       margin:{l:66, r:12, t:24, b:44}, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
       font:{family:FONT, color:ink}, showlegend:false,
-      hovermode:'x', hoverlabel:{bgcolor:'#fff', bordercolor:'#bbb', font:{family:FONT, color:'#111', size:13}},
+      hovermode:'x', hoverlabel:{bgcolor:'#fff', bordercolor:'#bbb', font:{family:FONT, color:'#111', size:12.5}},
       hoversubplots:'axis',
-      xaxis:{range:[0, 400], domain:[0, 1], anchor:'y4', title:{text:'time [min]', font:{size:13.5, color:ink}}, gridcolor:grid, zeroline:false,
-        linecolor:line, ticks:'inside', ticklen:3, tickcolor:line, tickfont:{size:12, color:ink}, dtick:50, fixedrange:true,
+      xaxis:{range:[0, 400], domain:[0, 1], anchor:'y4', title:{text:'time [min]', font:{size:13, color:ink}}, gridcolor:grid, zeroline:false,
+        linecolor:line, ticks:'inside', ticklen:3, tickcolor:line, tickfont:{size:11.5, color:ink}, dtick:50, fixedrange:true,
         showspikes:true, spikemode:'across', spikethickness:1, spikecolor:mut, spikedash:'solid'},
       yaxis:ax(DOM[0], (run ? '' : 'median ') + 'surprisal <i>s</i><sub>k</sub>', {range:[0, smax], anchor:'x'}),
       yaxis2:ax(DOM[1], (run ? '' : 'median ') + '<i>p</i><sub>CM,k</sub>', {range:[0, .64], anchor:'x', tickvals:[0.005, .2, .4, .6], ticktext:['0.005','0.2','0.4','0.6']}),
-      yaxis3:ax(DOM[2], run ? '<i>P</i><sub>M</sub>' : 'declared fraction of runs', {range:[0, 1.1], anchor:'x', tickvals:[0, .5, 1]}),
+      yaxis3:ax(DOM[2], run ? '<i>P</i><sub>M</sub>' : 'declared (of ' + nR + ' runs)', {range:[0, 1.1], anchor:'x', tickvals:[0, .5, 1]}),
       yaxis4:ax(DOM[3], (run ? '' : 'median ') + 'position error [km]', {type:'log', range:[-1.3, Math.min(2, Math.log10(emax) + 0.15)], anchor:'x', tickvals:[.1, .3, 1, 3, 10, 30, 100], ticktext:['0.1','0.3','1','3','10','30','100']}),
       shapes:shapes, annotations:ann
     };
   }
 
-  // ---- orbit view (geometry of Fig. 2) ----
+  // ---- orbit view (geometry of the scenario figure) ----
   var NS = 'http://www.w3.org/2000/svg', svg = document.getElementById('orbit');
   var MK = {0:'#E3E3E3', 1:'#FBE5D6', 2:'#F4B183', 3:'#E0702A', 4:'#8C2D04'}, BLUE = '#0072B2';
   function el(tag, attrs, parent){
@@ -486,18 +516,14 @@
   function buildOrbit(){
     svg.innerHTML = '';
     var Re = G.Re;
-    // sensor orbits, far side
     G.orb.forEach(function(o, i){
       polyRuns(o, function(k){ return !G.orbf[i][k]; }).forEach(function(r){ el('polyline', {points:pts(r), fill:'none', stroke:BLUE, 'stroke-width':.25, opacity:.35}); });
     });
-    // Earth and rotating graticule
     el('circle', {cx:0, cy:0, r:Re, fill:'#EEF2F6', stroke:'#8c8c8c', 'stroke-width':.18});
     O.grat = el('g', {});
-    // sensor orbits, near side
     G.orb.forEach(function(o, i){
       polyRuns(o, function(k){ return G.orbf[i][k]; }).forEach(function(r){ el('polyline', {points:pts(r), fill:'none', stroke:BLUE, 'stroke-width':.3}); });
     });
-    // full revolution coloured by m_k
     var Q = G.full;
     for (var k = 0; k < Q.length - 1; ){
       var lv = G.nfull[k], j = k;
@@ -505,15 +531,13 @@
       el('polyline', {points:pts(Q.slice(k, j + 1)), fill:'none', stroke:MK[lv], 'stroke-width':1.3, 'stroke-linecap':'butt'});
       k = j;
     }
-    // simulated arc, just outside the ring
     var qo = G.tgt.map(function(p){ return [p[0] * 1.075, p[1] * 1.075]; }); O.qo = qo;
     el('polyline', {points:pts(qo), fill:'none', stroke:'#000', 'stroke-width':.28, opacity:.25});
     O.arc = el('polyline', {points:'', fill:'none', stroke:'#000', 'stroke-width':.3});
     el('circle', {cx:qo[0][0], cy:-qo[0][1], r:.75, fill:'#000'});
     el('circle', {cx:qo[400][0], cy:-qo[400][1], r:.75, fill:'#fff', stroke:'#000', 'stroke-width':.25});
-    var t0 = el('text', {x:qo[0][0] + 1.6, y:-qo[0][1] - 1.4, 'font-size':3.4, 'text-anchor':'start'}); t0.innerHTML = '<tspan font-style="italic">t</tspan> = 0';
-    var t4 = el('text', {x:qo[400][0] - 1, y:-qo[400][1] + 5, 'font-size':3.4, 'text-anchor':'start'}); t4.innerHTML = '<tspan font-style="italic">t</tspan> = 400 min';
-    // sun arrow, lines of sight, sensors, target
+    var t0 = el('text', {x:qo[0][0] + 1.6, y:-qo[0][1] - 1.4, 'font-size':3.2, 'text-anchor':'start'}); t0.innerHTML = '<tspan font-style="italic">t</tspan> = 0';
+    var t4 = el('text', {x:qo[400][0] - 1, y:-qo[400][1] + 5, 'font-size':3.2, 'text-anchor':'start'}); t4.innerHTML = '<tspan font-style="italic">t</tspan> = 400 min';
     O.sun = el('g', {});
     O.los = el('g', {});
     O.sens = el('g', {});
@@ -544,7 +568,6 @@
     rotGrat(t);
     O.arc.setAttribute('points', pts(qo.slice(0, t + 1)));
     O.tgt.setAttribute('cx', qo[t][0]); O.tgt.setAttribute('cy', -qo[t][1]);
-    // sun direction (sampled every 10 min)
     var u = G.sun[Math.min(G.sun.length - 1, Math.round(t / 10))], n = Math.hypot(u[0], u[1]); u = [u[0] / n, u[1] / n];
     O.sun.innerHTML = '';
     var r0 = G.Re * 1.25, r1 = 20;
@@ -552,24 +575,21 @@
     var ang = Math.atan2(-u[1], u[0]), hx = u[0] * r1, hy = -u[1] * r1, hl = 1.6, hw = .8;
     el('polygon', {points:[hx + Math.cos(ang) * .2, hy + Math.sin(ang) * .2, hx - Math.cos(ang) * hl - Math.sin(ang) * hw, hy - Math.sin(ang) * hl + Math.cos(ang) * hw,
       hx - Math.cos(ang) * hl + Math.sin(ang) * hw, hy - Math.sin(ang) * hl - Math.cos(ang) * hw].join(','), fill:'#C9A227'}, O.sun);
-    var st = el('text', {x:u[0] * (r1 + 3), y:-u[1] * (r1 + 3) + 1, 'font-size':3.4, fill:'#9C7A10', 'text-anchor':'middle'}, O.sun); st.textContent = 'Sun';
-    // sensors and lines of sight
+    var st = el('text', {x:u[0] * (r1 + 3), y:-u[1] * (r1 + 3) + 1, 'font-size':3.2, fill:'#9C7A10', 'text-anchor':'middle'}, O.sun); st.textContent = 'Sun';
     O.los.innerHTML = ''; O.sens.innerHTML = '';
     for (var i = 0; i < 4; i++){
-      var p = G.sens[i][t], on = G.avail[i][t] === 1, hidden = !G.sfront[i][t] && Math.hypot(p[0], p[1]) < G.Re;
-      if (on) el('line', {x1:p[0], y1:-p[1], x2:qo[t][0], y2:-qo[t][1], stroke:'#555', 'stroke-width':.22, 'stroke-dasharray':'.5 .6', opacity:hidden ? .4 : 1}, O.los);
-      el('rect', {x:p[0] - .8, y:-p[1] - .8, width:1.6, height:1.6, fill:on ? BLUE : '#fff', stroke:BLUE, 'stroke-width':.3, opacity:hidden ? .35 : 1}, O.sens);
-      var lx = p[0] * 1.3, ly = -p[1] * 1.3;
-      var tx = el('text', {x:lx, y:ly + .9, 'font-size':3, fill:BLUE, 'text-anchor':'middle', opacity:hidden ? .35 : 1}, O.sens); tx.textContent = 'S' + (i + 1);
+      var p = G.sens[i][t], obs = G.avail[i][t] === 1, hidden = !G.sfront[i][t] && Math.hypot(p[0], p[1]) < G.Re;
+      if (obs) el('line', {x1:p[0], y1:-p[1], x2:qo[t][0], y2:-qo[t][1], stroke:'#555', 'stroke-width':.22, 'stroke-dasharray':'.5 .6', opacity:hidden ? .4 : 1}, O.los);
+      el('rect', {x:p[0] - .8, y:-p[1] - .8, width:1.6, height:1.6, fill:obs ? BLUE : '#fff', stroke:BLUE, 'stroke-width':.3, opacity:hidden ? .35 : 1}, O.sens);
+      var tx = el('text', {x:p[0] * 1.3, y:-p[1] * 1.3 + .9, 'font-size':2.8, fill:BLUE, 'text-anchor':'middle', opacity:hidden ? .35 : 1}, O.sens); tx.textContent = 'S' + (i + 1);
     }
-    // burn
     O.burn.innerHTML = '';
     if (S.dir !== 'N'){
       var b = qo[c.kb], R = 1.9, r = .8, sp = [];
       for (var k = 0; k < 10; k++){ var a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? r : R; sp.push((b[0] + rr * Math.cos(a)).toFixed(2) + ',' + (-b[1] + rr * Math.sin(a)).toFixed(2)); }
       el('polygon', {points:sp.join(' '), fill:t >= c.kb ? css('--burn') : '#fff', stroke:css('--burn'), 'stroke-width':.3}, O.burn);
-      var bt = el('text', {x:b[0] - 3, y:-b[1] - 3.2, 'font-size':3.4, fill:css('--burn'), 'font-weight':700, 'text-anchor':'middle'}, O.burn);
-      bt.innerHTML = 'burn (<tspan font-style="italic">t</tspan><tspan font-size="2.4" dy=".8">b</tspan><tspan dy="-.8">)</tspan>';
+      var bt = el('text', {x:b[0] - 3, y:-b[1] - 3.2, 'font-size':3.2, fill:css('--burn'), 'font-weight':700, 'text-anchor':'middle'}, O.burn);
+      bt.innerHTML = 'maneuver (<tspan font-style="italic">t</tspan><tspan font-size="2.3" dy=".8">b</tspan><tspan dy="-.8">)</tspan>';
     }
   }
 
@@ -592,16 +612,16 @@
     nb += kv('<i>p</i><sub>CM,k</sub> (RD-IMM)', fmt((run ? series('pcm_ref', 'pcm') : agg('pcm_ref'))[k], 3));
     if (run){
       nb += kv('<i>P</i><sub>M</sub> (RD-IMM)', fmt(series('pm_prop', 'p')[k], 2));
-      nb += kv('error, RD-IMM / NIS test', fmt(series('err_prop', 'e')[k], 2) + ' / ' + fmt(series('err_goff', 'e')[k], 2) + ' km');
+      nb += kv('error, RD-IMM / CI-IMM', fmt(series('err_prop', 'e')[k], 2) + ' / ' + fmt(series('err_goff', 'e')[k], 2) + ' km');
     } else {
-      nb += kv('declared, RD-IMM / NIS test', fmt(agg('cum_prop')[k], 2) + ' / ' + fmt(agg('cum_goff')[k], 2));
+      nb += kv('declared, RD-IMM / CI-IMM', fmt(agg('cum_prop')[k], 2) + ' / ' + fmt(agg('cum_goff')[k], 2));
     }
     document.getElementById('nowBody').innerHTML = nb;
 
     var eb = '', note = '';
-    var list = ['prop','own','goff','jia','aimm','nisgate'].filter(function(m){ return c.decl[m] && (m !== 'own' || c.own); });
+    var list = ORDER.filter(function(m){ return c.decl[m] && hasM(m); });
     if (run){
-      document.getElementById('evTitle').textContent = 'Run ' + (S.run + 1) + ' of 50: first declaration';
+      document.getElementById('evTitle').textContent = 'Run ' + (S.run + 1) + ' of ' + c.R + ': first declaration';
       list.forEach(function(m){
         var pre = c.decl[m][0][S.run], post = c.decl[m][1][S.run], v;
         if (pre >= 0) v = pre + ' min<span class="tag">false</span>';
@@ -611,12 +631,12 @@
         eb += kv(METHODS[m].short, v, m);
       });
       note = S.dir === 'N' ? 'No maneuver in this case, so every declaration is false.' :
-        'Latency from <i>t</i><sub>b</sub>; a declaration before <i>t</i><sub>b</sub> is false. The NIS test declares when Ψ<sup>ref</sup> &gt; 30.';
+        'Latency from <i>t</i><sub>b</sub>; a declaration before <i>t</i><sub>b</sub> is false. CI-IMM declares when Ψ<sup>ref</sup> &gt; 30.';
     } else {
       document.getElementById('evTitle').textContent = 'Table 1';
       var key = S.dir === 'N' ? null : S.dir, idx = DV.indexOf(S.dv);
-      list.concat(['ekf']).forEach(function(m){ eb += kv(METHODS[m].short, key ? T1[m][key][idx] : T1[m].fa, m); });
-      note = key ? 'P<sub>d</sub> / median latency [min]. * Declared before <i>t</i><sub>b</sub> in more than half of the runs.' : 'False-declaration rate in the maneuver-free runs.';
+      ORDER.forEach(function(m){ eb += kv(METHODS[m].short, key ? T1[m][key][idx] : T1[m].fa, m); });
+      note = key ? '<i>P</i><sub>d</sub> / median latency [min].' : 'False-declaration rate over the 500 maneuver-free runs.';
     }
     document.getElementById('evBody').innerHTML = eb;
     document.getElementById('evNote').innerHTML = note;
@@ -637,7 +657,7 @@
   seg('dirSeg', 'd', function(v){ S.dir = v; syncDv(); refresh(); });
   seg('dvSeg', 'v', function(v){ S.dv = v; refresh(); });
   seg('modeSeg', 'm', function(v){ S.mode = v; document.getElementById('runCtl').style.visibility = v === 'run' ? 'visible' : 'hidden'; draw(); });
-  function setRun(r){ S.run = (r + 50) % 50; document.getElementById('runNum').textContent = 'run ' + (S.run + 1); draw(); }
+  function setRun(r){ var R = C().R; S.run = (r + R) % R; document.getElementById('runNum').textContent = 'run ' + (S.run + 1); draw(); }
   document.getElementById('runPrev').addEventListener('click', function(){ setRun(S.run - 1); });
   document.getElementById('runNext').addEventListener('click', function(){ setRun(S.run + 1); });
   function refresh(){ buildChips(); buildTable(); draw(); }
@@ -662,7 +682,6 @@
   syncDv();
   buildChips(); buildTable();
   setT(400);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ draw(); });
 })();
 </script>
 </body>

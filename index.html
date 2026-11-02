@@ -261,12 +261,12 @@
           <div class="venue">arXiv preprint</div>
           <p class="desc">
             Adaptive-TPM Interacting Multiple Model (IMM) filters update their transition probabilities from statistics
-            computed inside the IMM, which already depend on those probabilities through mixing; this feedback loop either
-            sustains false alarms or suppresses real detections. RD-IMM breaks the loop by driving the transitions from the
-            normalized innovation squared of a reference coast filter outside the IMM. Tracking a geosynchronous satellite
-            with four space-based optical sensors, it detects 98% of 1 m/s north–south (out-of-plane) burns that a
-            fixed-TPM IMM misses, with few false alarms, and reduces the position error after a small in-track burn by
-            more than 50% compared with single-filter approaches.
+            computed inside the IMM, which already depend on those probabilities through the interaction step; the resulting
+            feedback loop can raise the maneuver probability without a maneuver or suppress its rise after one. RD-IMM drives
+            the transitions from the normalized innovation squared of a reference coast filter decoupled from the IMM.
+            Tracking a geostationary satellite with four space-based optical sensors, it detects 98% of 1 m/s out-of-plane
+            maneuvers (fixed-TPM IMM: 6%) with a false-declaration rate of 0.03, and has the lowest position error in the
+            first hour after a 1 m/s in-track maneuver (0.75 km, compared with 0.88–2.25 km).
           </p>
           <div class="plinks">
             <a href="rdimm/" target="_blank" rel="noopener">Project page ↗</a>
