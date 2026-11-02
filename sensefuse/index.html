@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SenseFuse</title>
+<meta name="description" content="SenseFuse: label-free fusion of 2D image and 3D shape encoders for open-vocabulary 3D instance segmentation, with a real-world UR5 demo.">
+<meta property="og:title" content="SenseFuse: Label-Free Fusion of Image and Shape Encoders for Open-Vocabulary 3D Instance Segmentation">
+<meta property="og:image" content="https://hanes1207.github.io/sensefuse/sensefuse_real_demo_poster.jpg">
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#ffffff; --ink:#1a1a1a; --ink2:#374151; --muted:#6b7280; --line:#e5e7eb;
+    --accent:#2563eb; --card:#f7f7f8; --dark:#1f2328;
+  }
+  *{box-sizing:border-box;}
+  html{font-size:16px;}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.65;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+  .back{display:block;font-size:.85rem;color:var(--muted);padding-top:22px;}
+
+  header{text-align:center;padding:30px 0 34px;}
+  h1{font-size:2.05rem;line-height:1.25;margin:0 auto 14px;max-width:860px;letter-spacing:-.01em;}
+  h1 .name{color:var(--accent);}
+  .badge{display:inline-block;font-size:.85rem;font-weight:600;padding:3px 12px;border-radius:999px;
+    background:#eef2ff;color:#3730a3;margin-bottom:16px;}
+  .authors{font-size:1.05rem;margin:0 0 4px;}
+  .authors span{white-space:nowrap;margin:0 7px;}
+  .authors sup,.affil sup{font-size:.7em;}
+  .affil{color:var(--muted);font-size:.95rem;margin:0 0 20px;}
+  .buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;}
+  .buttons a{display:inline-flex;align-items:center;gap:7px;background:var(--dark);color:#fff;
+    padding:8px 18px;border-radius:999px;font-size:.95rem;font-weight:500;}
+  .buttons a:hover{background:#000;text-decoration:none;}
+  .buttons svg{width:17px;height:17px;fill:currentColor;flex:0 0 17px;}
+
+  section{padding:34px 0;border-top:1px solid var(--line);}
+  h2{text-align:center;font-size:1.45rem;margin:0 0 18px;}
+  h3{font-size:1.05rem;margin:22px 0 6px;}
+  p{margin:0 0 12px;}
+  .small{font-size:.92rem;color:var(--ink2);}
+  .abstract{text-align:justify;hyphens:auto;}
+  video{width:100%;display:block;border-radius:8px;background:#000;}
+  figure{margin:0;}
+  figure img{width:100%;height:auto;display:block;}
+  figure.narrow img{max-width:560px;margin:0 auto;}
+  figcaption{font-size:.9rem;color:var(--ink2);margin:10px 0 0;}
+  .facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px;margin:14px 0 0;padding:0;list-style:none;font-size:.92rem;}
+  .facts li{border-left:3px solid var(--line);padding-left:10px;}
+  .facts b{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+  .points{margin:0;padding-left:20px;} .points li{margin-bottom:6px;}
+
+  .tablewrap{overflow-x:auto;margin-top:6px;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numeric:tabular-nums;}
+  th,td{padding:5px 8px;text-align:center;white-space:nowrap;}
+  thead th{font-weight:600;}
+  thead tr:last-child th{border-bottom:1px solid var(--ink);font-weight:400;color:var(--ink2);}
+  tbody th{text-align:left;font-weight:400;}
+  td.sf{font-weight:600;}
+  .grp{border-left:1px solid var(--line);}
+
+  pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+    font-size:.82rem;line-height:1.5;overflow-x:auto;margin:0;}
+  footer{padding:24px 0 48px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;text-align:center;}
+
+  @media (max-width:640px){
+    .wrap{padding:0 16px;}
+    h1{font-size:1.5rem;}
+    .facts{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <a class="back" href="../index.html#publications">← Euiseok Han</a>
+
+  <header>
+    <h1><span class="name">SenseFuse</span>: Label-Free Fusion of Image and Shape Encoders for Open-Vocabulary 3D Instance Segmentation</h1>
+    <div class="badge">Under review at ICRA 2027</div>
+    <p class="authors">
+      <span><a href="https://hanes1207.github.io">Euiseok Han</a><sup>1</sup></span>
+      <span>Tri Ton<sup>1</sup></span>
+      <span>Hwanhee Kim<sup>1</sup></span>
+      <span>Seungyeon Ryu<sup>1</sup></span>
+      <span>Chang D. Yoo<sup>1</sup></span>
+    </p>
+    <p class="affil"><sup>1</sup>Korea Advanced Institute of Science and Technology (KAIST)</p>
+    <div class="buttons">
+      <a href="https://arxiv.org/pdf/2609.20475" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM8 13h8v1.6H8V13zm0 3.4h8V18H8v-1.6z"/></svg>Paper</a>
+      <a href="https://arxiv.org/abs/2609.20475" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2H4V4zm0 5h16v2H4V9zm0 5h10v2H4v-2zm0 5h10v2H4v-2z"/></svg>arXiv</a>
+      <a href="https://github.com/hanes1207/SenseFuse" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Code</a>
+      <a href="#demo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 6 6 4-6 4V8z"/></svg>Real-robot demo</a>
+    </div>
+  </header>
+</div>
+
+<section id="demo">
+  <div class="wrap">
+    <h2>Real-World Demo on a UR5</h2>
+    <video controls playsinline preload="metadata" poster="sensefuse_real_demo_poster.jpg">
+      <source src="sensefuse_real_demo.mp4" type="video/mp4">
+    </video>
+    <ul class="facts">
+      <li><b>Setup</b>UR5 with a wrist-mounted RGB-D camera; a fixed third-person camera records the robot.</li>
+      <li><b>Encoders</b>2D EVA02-E (image) and 3D Uni3D (shape), fused with a label-free scene-level weight <i>w</i>.</li>
+      <li><b>Vocabulary</b>YCB object classes, not tailored to this scene; objects outside it take their closest class.</li>
+      <li><b>Compute</b>Perception runs on a remote GPU; overlays show the last processed frame (about 1.5 s behind).</li>
+    </ul>
+  </div>
+</section>
+
+<section id="abstract">
+  <div class="wrap">
+    <h2>Abstract</h2>
+    <p class="abstract">
+      Open-vocabulary scene understanding is fundamental for robotics, laying the groundwork for spatial reasoning and object manipulation.
+      While closed-vocabulary 3D instance segmentation heavily leverages 3D shape information, state-of-the-art open-vocabulary methods remain
+      predominantly restricted to 2D image features or image-distilled representations during mask labeling.
+      In this paper, we propose SenseFuse, a label-free fusion method that balances 2D image and 3D shape encoders for robust open-vocabulary
+      3D instance segmentation, refining only the mask-labeling stage of existing pipelines.
+      We reveal that 2D image and 3D shape encoders exhibit largely disjoint failure patterns and rarely share identical wrong labels, whereas
+      two 2D image encoders frequently repeat the same errors. This distinct behavior makes the 2D and 3D pair inherently complementary.
+      We introduce an adaptive mechanism that selects a scene-level fusion weight to maximize a label-free sensitivity measure, estimated
+      directly from a single scene's unlabeled proposals in milliseconds.
+      SenseFuse improves labeling accuracy in every evaluated setting across ScanNet200, Replica, and ScanNet++, recovering 67–100%
+      (median 93%) of the gain achievable with an oracle weight, and it raises instance AP in 21 of 22 reported settings.
+    </p>
+  </div>
+</section>
+
+<section id="observation">
+  <div class="wrap">
+    <h2>2D and 3D Encoders Fail Differently</h2>
+    <figure class="narrow">
+      <img src="fig_cover_pair.jpg" alt="Failure case of Open-YOLO3D: the 2D head labels an occluded chair as table, the 3D head labels it folded chair, and their fused scores recover chair" loading="lazy">
+      <figcaption>
+        A failure case of Open-YOLO3D: multi-view crops, per-class scores of both heads (centered cosine scores), and the fused verdict
+        (solid bars: ground-truth class). The 2D and 3D heads misread the chair as “table” and “folded chair”, respectively, yet their
+        errors disagree. Fusing the two score vectors recovers “chair”.
+      </figcaption>
+    </figure>
+    <p style="margin-top:18px">
+      On ScanNet200, a 2D image encoder and a 3D shape encoder rarely share the same wrong label, whereas two 2D image encoders
+      repeat each other's mistakes far more often. The 2D–3D pair, rather than a second 2D encoder, is therefore the profitable fusion target.
+    </p>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <h2>Method</h2>
+    <figure>
+      <img src="fig_architecture.jpg" alt="SenseFuse pipeline: a frozen 3DIS pipeline provides masks, image crops and masked points; 2D image and 3D shape encoders score them against text anchors; the centered scores are fused with one scalar weight w estimated from soft labels" loading="lazy">
+      <figcaption>
+        A frozen 3DIS pipeline (Open-YOLO3D, OpenMask3D, or Open3DIS) provides mask proposals, image crops, and masked point clouds.
+        The 2D image and 3D shape encoders score each mask against their own text anchors; the two score spaces are row-centered and
+        linearly fused with a single scalar weight <i>w</i>. No component is trained, and the mask geometry is untouched.
+      </figcaption>
+    </figure>
+    <ul class="points" style="margin-top:18px">
+      <li><b>Sensitivity per head.</b> Each head's reliability is its sensitivity: how far it lifts the correct class above its own
+        background noise, in units of the background standard deviation.</li>
+      <li><b>Closed-form weight.</b> The scene-level weight that maximizes the sensitivity of the fused score depends only on the
+        first two moments of each head's scores; under Gaussian scores it coincides with the Bayes decision rule.</li>
+      <li><b>Label-free estimation.</b> The moments are estimated from a single scene's unlabeled proposals with soft responsibilities
+        computed from the current fused scores, and the weight is updated until it converges, in milliseconds per scene.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <h2>Results</h2>
+    <p class="small">Labeling accuracy (%) on the validation sets, each scored with its benchmark's official class list.
+      2D: the pipeline's own labeling. SenseFuse: fused at the label-free weight. rec: fraction of the oracle-weight gain recovered.</p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th></th><th colspan="3" class="grp">ScanNet200</th><th colspan="3" class="grp">Replica</th><th colspan="3" class="grp">ScanNet++</th></tr>
+          <tr><th style="text-align:left">Pipeline</th>
+            <th class="grp">2D</th><th>SenseFuse</th><th>rec</th>
+            <th class="grp">2D</th><th>SenseFuse</th><th>rec</th>
+            <th class="grp">2D</th><th>SenseFuse</th><th>rec</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>Open-YOLO3D (EVA)</th><td class="grp">48.4</td><td class="sf">53.0</td><td>99%</td><td class="grp">61.2</td><td class="sf">71.2</td><td>93%</td><td class="grp">44.2</td><td class="sf">69.3</td><td>91%</td></tr>
+          <tr><th>Open-YOLO3D (CLIP)</th><td class="grp">41.1</td><td class="sf">48.0</td><td>97%</td><td class="grp">65.5</td><td class="sf">71.2</td><td>67%</td><td class="grp">50.2</td><td class="sf">70.5</td><td>93%</td></tr>
+          <tr><th>OpenMask3D</th><td class="grp">29.4</td><td class="sf">33.9</td><td>81%</td><td class="grp">60.4</td><td class="sf">67.6</td><td>67%</td><td class="grp">–</td><td>–</td><td>–</td></tr>
+          <tr><th>Open3DIS<sup>†</sup></th><td class="grp">37.5</td><td class="sf">44.6</td><td>100%</td><td class="grp">51.1</td><td class="sf">58.4</td><td>97%</td><td class="grp">68.0</td><td class="sf">71.8</td><td>96%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted);margin-top:6px">† Recomputed from raw cosine scores. OpenMask3D has no ScanNet++ proposals. Full results, including instance AP, are in the paper.</p>
+
+    <h3>Qualitative result</h3>
+    <figure>
+      <img src="fig_room.jpg" alt="ScanNet200 scene0578_00 labeled by the 2D head (7 of 13 correct), the 3D head (5 of 13) and SenseFuse (10 of 13)" loading="lazy">
+      <figcaption>
+        Instance labeling on ScanNet200 scene0578_00 by Open-YOLO3D (EVA, 2D only), Uni3D (3D only), and SenseFuse
+        (green: correct, red: incorrect). SenseFuse correctly labels 10 of 13 masks without changing any label that was already correct.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="video">
+  <div class="wrap">
+    <h2>Supplementary Video</h2>
+    <video controls playsinline preload="metadata" poster="sensefuse_supplementary_poster.jpg">
+      <source src="sensefuse_supplementary_two_rooms.mp4" type="video/mp4">
+    </video>
+    <p style="font-size:.9rem;color:var(--ink2);margin-top:10px">A walkthrough of the task, the failure patterns of the two encoders, and cases that fusion corrects, on ScanNet scenes.</p>
+  </div>
+</section>
+
+<section id="bibtex">
+  <div class="wrap">
+    <h2>BibTeX</h2>
+<pre>@article{han2026sensefuse,
+  title   = {SenseFuse: Label-Free Fusion of Image and Shape Encoders for Open-Vocabulary 3D Instance Segmentation},
+  author  = {Han, Euiseok and Ton, Tri and Kim, Hwanhee and Ryu, Seungyeon and Yoo, Chang D.},
+  journal = {arXiv preprint arXiv:2609.20475},
+  year    = {2026}
+}</pre>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><a href="../index.html">Euiseok Han</a> · KAIST</div>
+</footer>
+
+</body>
+</html>
