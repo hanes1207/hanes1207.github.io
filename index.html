@@ -199,7 +199,7 @@
         <p>
             I have approached this goal from three directions.
             In <strong>perception</strong>, <a href="#publications">SenseFuse</a> weighs frozen 2D image and 3D shape encoders
-            by a label-free reliability estimate, exploiting the fact that their failures are largely disjoint.
+            by a label-free reliability estimate, exploiting the fact that the two rarely give the same wrong label.
             In <strong>estimation</strong>, <a href="#publications">RD-IMM</a> drives the model-switching probabilities of an
             IMM filter from a reference filter outside the IMM, breaking a feedback loop that either sustains false alarms or
             suppresses real detections.
@@ -231,8 +231,8 @@
           <div class="authors"><strong>Euiseok Han</strong>, Tri Ton, Hwanhee Kim, Seungyeon Ryu, Chang D. Yoo</div>
           <div class="venue">Submitted to IEEE International Conference on Robotics and Automation (ICRA) 2027</div>
           <p class="desc">
-            We reveal that frozen open-vocabulary 2D image and 3D shape encoders fail on largely disjoint sets of
-            instances: a 2D–3D pair shares only 5.9% of its wrong labels, whereas two 2D encoders share 41.4%.
+            We reveal that frozen open-vocabulary 2D image and 3D shape encoders give the same wrong label in only 5.9%
+            of their joint errors, versus 41.4% for a pair of 2D encoders.
             SenseFuse fuses the two at the mask-labeling stage with a closed-form, label-free scene-level weight that
             maximizes a sensitivity measure, estimated from a single scene's unlabeled proposals in 3.5 ms. Across
             ScanNet200, Replica, and ScanNet++, it improves labeling accuracy in every setting (median +7.1 points),
